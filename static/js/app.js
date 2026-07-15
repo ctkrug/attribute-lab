@@ -96,6 +96,17 @@ function hydrateControlsFromState() {
 function applyPreset() {
   syncDemoElAttributes();
   updateExternalTargetEmphasis();
+  syncUrlToPresetState();
+}
+
+// Keeps the address bar's query string equal to encodePresetState(presetState)
+// at all times, via replaceState (not pushState) so clicking through presets
+// doesn't spam browser history — the URL only needs to be *current* for
+// copying, not itself a navigable trail.
+function syncUrlToPresetState() {
+  const url = new URL(window.location.href);
+  url.search = encodePresetState(presetState);
+  window.history.replaceState(null, "", `${url.pathname}${url.search}`);
 }
 
 // Toggled on the stable .external-target-wrap, not #demo-target-external
