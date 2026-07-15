@@ -40,13 +40,13 @@ polish on top of a working demo, not a prerequisite to it.
 
 ## Epic 2 — Full preset coverage
 
-- [ ] **2.1 — hx-trigger presets (click, revealed, delay)**
+- [x] **2.1 — hx-trigger presets (click, revealed, delay)**
   Preset picker includes trigger variants beyond click.
   - Selecting "revealed" fires the request only when the demo element scrolls into view.
   - Selecting "delay:500ms" fires the request 500ms after the interaction, and the network
     panel timestamp reflects the delay.
 
-- [ ] **2.2 — hx-target presets (self vs. external target)**
+- [x] **2.2 — hx-target presets (self vs. external target)**
   Preset picker includes a target selector distinguishing swapping the trigger element
   itself vs. an external target element.
   - With an external target selected, the DOM patch panel highlights the external
@@ -54,7 +54,7 @@ polish on top of a working demo, not a prerequisite to it.
   - Switching back to self-target correctly redirects the highlight to the trigger element
     on the next fire.
 
-- [ ] **2.3 — hx-select and hx-indicator presets**
+- [x] **2.3 — hx-select and hx-indicator presets**
   Preset picker includes `hx-select` (partial response extraction) and `hx-indicator`
   (loading state).
   - With `hx-select` active, the DOM patch panel shows only the selected fragment of the
@@ -62,7 +62,7 @@ polish on top of a working demo, not a prerequisite to it.
   - With `hx-indicator` active, a loading state is visibly shown between request fire and
     response landing (verified against an artificially delayed demo endpoint).
 
-- [ ] **2.4 — Design polish: preset picker interaction states**
+- [x] **2.4 — Design polish: preset picker interaction states**
   Every preset control (chips/toggles/selects) has themed hover, focus-visible, active,
   and disabled states per `docs/DESIGN.md` — no naked native form controls.
   - Tabbing through the preset picker shows a visible focus ring on every control.
