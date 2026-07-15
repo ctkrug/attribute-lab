@@ -36,6 +36,13 @@ test("demoUrl appends select and indicator only when truthy", () => {
   );
 });
 
+test("demoUrl omits select/indicator identically whether false or absent", () => {
+  assert.equal(
+    demoUrl({ swap: "innerHTML", select: false, indicator: false }),
+    demoUrl({ swap: "innerHTML" })
+  );
+});
+
 test("demoUrl rejects unknown swap styles and target presets", () => {
   assert.throws(() => demoUrl({ swap: "bogus" }), RangeError);
   assert.throws(() => demoUrl({ swap: "" }), RangeError);
