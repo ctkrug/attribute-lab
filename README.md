@@ -42,7 +42,7 @@ you *see happen*, not something you infer from a paragraph.
 - [x] Side-by-side sync: request fires and patch highlight land within the same visible beat.
 - [x] Broader preset coverage: `hx-trigger`, `hx-target`, `hx-select`, `hx-indicator`.
 - [ ] Swap-strategy comparison mode: fire the same trigger against two swap strategies at once.
-- [ ] Shareable preset links (state encoded in the URL).
+- [x] Shareable preset links (state encoded in the URL).
 
 ## Stack
 
