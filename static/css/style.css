@@ -1,25 +1,37 @@
-/* Placeholder base styles — replaced with the docs/DESIGN.md tokens
-   and layout during the build phase. */
+/* docs/DESIGN.md tokens — blueprint/technical direction. */
 
-* {
-  box-sizing: border-box;
-}
+:root {
+  --bg: #0a1826;
+  --surface-1: #0f2136;
+  --surface-2: #15304a;
+  --line: #254a68;
+  --text: #e8f2fb;
+  --text-muted: #7fa1bd;
+  --accent: #5ec8f2;
+  --accent-support: #f2a65e;
+  --success: #5ef2a6;
+  --danger: #f25e5e;
 
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  padding: 2rem;
-}
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+  --font-sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
 
-.site-header {
-  margin-bottom: 2rem;
-}
+  --step--1: 13px;
+  --step-0: 16px;
+  --step-1: 20px;
+  --step-2: 25px;
+  --step-3: 31px;
+  --step-4: 39px;
 
-.wordmark {
-  margin: 0 0 0.25rem;
-}
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
 
-.tagline {
-  margin: 0;
-  color: #555;
+  --radius: 2px;
+  --motion-ui: 180ms ease-out;
+  --motion-connector: 380ms ease-out;
 }
