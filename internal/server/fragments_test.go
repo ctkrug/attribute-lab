@@ -7,6 +7,7 @@ import (
 	"strconv"
 	"strings"
 	"testing"
+	"time"
 )
 
 var genAttr = regexp.MustCompile(`data-gen="(\d+)"`)
@@ -127,6 +128,30 @@ func TestDemoFragmentWithoutSelectOmitsNoiseAndMarker(t *testing.T) {
 		if strings.Contains(body, unwanted) {
 			t.Fatalf("body = %q, want it to omit %q when select is not requested", body, unwanted)
 		}
+	}
+}
+
+func TestDemoFragmentIndicatorDelaysTheResponse(t *testing.T) {
+	original := demoIndicatorDelay
+	demoIndicatorDelay = 30 * time.Millisecond
+	t.Cleanup(func() { demoIndicatorDelay = original })
+
+	start := time.Now()
+	fireDemo(t, "?indicator=1")
+	if elapsed := time.Since(start); elapsed < demoIndicatorDelay {
+		t.Fatalf("elapsed = %v, want at least %v", elapsed, demoIndicatorDelay)
+	}
+}
+
+func TestDemoFragmentWithoutIndicatorDoesNotDelay(t *testing.T) {
+	original := demoIndicatorDelay
+	demoIndicatorDelay = 200 * time.Millisecond
+	t.Cleanup(func() { demoIndicatorDelay = original })
+
+	start := time.Now()
+	fireDemo(t, "")
+	if elapsed := time.Since(start); elapsed >= demoIndicatorDelay {
+		t.Fatalf("elapsed = %v, want a response well under the indicator delay of %v", elapsed, demoIndicatorDelay)
 	}
 }
 
