@@ -67,6 +67,22 @@ export function decodePresetState(search) {
 }
 
 /**
+ * Builds the concise, screen-reader-friendly sentence announced by the
+ * status-announcer live region after each request/patch cycle. The network
+ * and DOM patch panels are visually rich but too verbose to dump into an
+ * aria-live region wholesale (a live region re-reads its entire content on
+ * every change) — this is the summary a sighted user gets for free just by
+ * glancing at both panels at once.
+ */
+export function describeRequestOutcome({ status, swap, target }) {
+  const targetLabel = target === "external" ? "the external target" : "the live element";
+  if (!status) {
+    return "Request failed — no response received.";
+  }
+  return `Response ${status} — patched ${targetLabel} via ${swap}.`;
+}
+
+/**
  * Computes the next focused index for an ARIA `radiogroup` of `count`
  * options given the currently-focused index and a keydown key name, per the
  * WAI-ARIA roving-tabindex pattern (Right/Down moves forward, Left/Up moves
