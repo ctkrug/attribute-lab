@@ -4,6 +4,15 @@
 
 export const SWAP_STYLES = ["innerHTML", "outerHTML"];
 export const TARGET_PRESETS = ["self", "external"];
+export const TRIGGER_PRESETS = ["click", "revealed", "delay"];
+
+export const DEFAULT_PRESET_STATE = {
+  swap: "innerHTML",
+  trigger: "click",
+  target: "self",
+  select: false,
+  indicator: false,
+};
 
 /**
  * Builds the demo endpoint URL for a given preset combination. Relative (no
@@ -21,8 +30,6 @@ export function demoUrl({ swap, target = "self", select = false, indicator = fal
   if (indicator) params.set("indicator", "1");
   return `api/demo?${params.toString()}`;
 }
-
-export const TRIGGER_PRESETS = ["click", "revealed", "delay"];
 
 /**
  * Builds the hx-trigger attribute value for a given trigger preset. "delay"
