@@ -35,7 +35,7 @@ func TestDemoFragmentOuterHTMLIncludesWrappingElement(t *testing.T) {
 	rec := fireDemo(t, "?swap=outerHTML")
 
 	body := rec.Body.String()
-	for _, want := range []string{`id="demo-el"`, `hx-swap="outerHTML"`, `hx-target="#demo-el"`, `hx-get="api/demo?swap=outerHTML"`} {
+	for _, want := range []string{`id="demo-el"`, `hx-swap="outerHTML"`, `hx-target="#demo-el"`, `hx-get="api/demo?swap=outerHTML&amp;target=self"`} {
 		if !strings.Contains(body, want) {
 			t.Fatalf("body = %q, want it to contain %q", body, want)
 		}
