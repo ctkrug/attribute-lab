@@ -101,7 +101,7 @@ polish on top of a working demo, not a prerequisite to it.
   - The demo element + panels occupy the majority of the viewport at all three widths
     (no small fixed-pixel box adrift in empty background).
 
-- [ ] **4.2 — Accessibility pass**
+- [x] **4.2 — Accessibility pass**
   Keyboard and screen-reader users can operate every preset and read panel updates.
   - Every preset control is reachable and operable via keyboard alone (Tab + Enter/Space).
   - Panel updates (network result, patch highlight) are announced via an `aria-live`
