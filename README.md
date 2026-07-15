@@ -40,7 +40,7 @@ you *see happen*, not something you infer from a paragraph.
 - [x] Live network panel: real request/response, not a mock — driven by htmx's own events.
 - [x] Live DOM patch panel: flash-highlight of exactly the nodes htmx swapped.
 - [x] Side-by-side sync: request fires and patch highlight land within the same visible beat.
-- [ ] Broader preset coverage: `hx-trigger`, `hx-target`, `hx-select`, `hx-indicator`.
+- [x] Broader preset coverage: `hx-trigger`, `hx-target`, `hx-select`, `hx-indicator`.
 - [ ] Swap-strategy comparison mode: fire the same trigger against two swap strategies at once.
 - [ ] Shareable preset links (state encoded in the URL).
 
@@ -54,7 +54,8 @@ you *see happen*, not something you infer from a paragraph.
 
 ## Status
 
-Epic 1 (the wow moment) is built and verified end-to-end — see
+Epics 1 and 2 (the wow moment, plus full `hx-trigger`/`hx-target`/`hx-select`/`hx-indicator`
+preset coverage) are built and verified end-to-end — see
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for how it fits together,
 [`docs/VISION.md`](docs/VISION.md) for the full design,
 [`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction, and
