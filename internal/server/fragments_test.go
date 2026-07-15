@@ -108,6 +108,28 @@ func TestDemoFragmentInnerAndOuterShareSameGenScheme(t *testing.T) {
 	}
 }
 
+func TestDemoFragmentSelectWrapsPayloadWithNoiseAndMarker(t *testing.T) {
+	rec := fireDemo(t, "?select=1")
+
+	body := rec.Body.String()
+	for _, want := range []string{"fragment-noise", "data-fragment-content"} {
+		if !strings.Contains(body, want) {
+			t.Fatalf("body = %q, want it to contain %q", body, want)
+		}
+	}
+}
+
+func TestDemoFragmentWithoutSelectOmitsNoiseAndMarker(t *testing.T) {
+	rec := fireDemo(t, "")
+
+	body := rec.Body.String()
+	for _, unwanted := range []string{"fragment-noise", "data-fragment-content"} {
+		if strings.Contains(body, unwanted) {
+			t.Fatalf("body = %q, want it to omit %q when select is not requested", body, unwanted)
+		}
+	}
+}
+
 func genOf(t *testing.T, body string) int {
 	t.Helper()
 	m := genAttr.FindStringSubmatch(body)
