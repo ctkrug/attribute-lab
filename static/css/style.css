@@ -399,3 +399,73 @@ body {
   border-radius: var(--radius);
   padding: 0 2px;
 }
+
+.rig-pulse {
+  display: none;
+}
+
+/* Tablet and phone: the 40/60 side-by-side split has no room to breathe
+   below ~1024px, so the rig collapses to a single column stacked in
+   fire-order (stage, then network, then patch) — the same order the
+   markup is already written in. */
+@media (max-width: 1023px) {
+  body {
+    padding: var(--space-4);
+  }
+
+  .rig {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .connectors {
+    display: none;
+  }
+
+  .rig-pulse {
+    display: block;
+    width: 2px;
+    height: var(--space-6);
+    margin: 0 auto;
+    background: var(--line);
+  }
+
+  .rig-pulse.is-firing {
+    animation: rig-pulse-sweep var(--motion-connector) ease-out;
+  }
+
+  .preset-bar {
+    overflow-x: auto;
+  }
+}
+
+@keyframes rig-pulse-sweep {
+  0%,
+  100% {
+    background: var(--line);
+  }
+  50% {
+    background: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rig-pulse.is-firing {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .wordmark {
+    font-size: var(--step-3);
+  }
+
+  .demo-el {
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--step-0);
+  }
+
+  .preset-bar {
+    gap: var(--space-2);
+  }
+}
