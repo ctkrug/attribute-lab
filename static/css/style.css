@@ -221,7 +221,11 @@ body {
 
 .zone {
   position: relative;
-  background: var(--surface-1);
+  background-color: var(--surface-1);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: var(--space-4);
