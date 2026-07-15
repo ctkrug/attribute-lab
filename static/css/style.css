@@ -183,10 +183,12 @@ body {
   z-index: 1;
 }
 
+/* app.js sets stroke-dasharray to the line's own length (one dash spanning
+   the whole path) so the dashoffset animation reads as the line drawing
+   itself rather than its dashes marching along a fixed pattern. */
 .connector {
   stroke: var(--accent);
   stroke-width: 2;
-  stroke-dasharray: 6 6;
   stroke-dashoffset: 0;
   fill: none;
   opacity: 0;
