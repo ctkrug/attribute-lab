@@ -10,6 +10,7 @@ import {
   encodePresetState,
   decodePresetState,
   DEFAULT_PRESET_STATE,
+  nextRadioIndex,
 } from "./lab-core.mjs";
 
 test("demoUrl builds a relative, subpath-safe URL defaulting target to self", () => {
@@ -167,4 +168,32 @@ test("decodePresetState treats select/indicator as boolean flags, not just any t
   assert.equal(decodePresetState("select=true").select, false);
   assert.equal(decodePresetState("select=1").select, true);
   assert.equal(decodePresetState("indicator=0").indicator, false);
+});
+
+test("nextRadioIndex moves forward on ArrowRight/ArrowDown and wraps at the end", () => {
+  assert.equal(nextRadioIndex(0, "ArrowRight", 3), 1);
+  assert.equal(nextRadioIndex(2, "ArrowRight", 3), 0);
+  assert.equal(nextRadioIndex(0, "ArrowDown", 3), 1);
+});
+
+test("nextRadioIndex moves backward on ArrowLeft/ArrowUp and wraps at the start", () => {
+  assert.equal(nextRadioIndex(1, "ArrowLeft", 3), 0);
+  assert.equal(nextRadioIndex(0, "ArrowLeft", 3), 2);
+  assert.equal(nextRadioIndex(0, "ArrowUp", 3), 2);
+});
+
+test("nextRadioIndex jumps to the ends on Home/End", () => {
+  assert.equal(nextRadioIndex(1, "Home", 3), 0);
+  assert.equal(nextRadioIndex(1, "End", 3), 2);
+});
+
+test("nextRadioIndex leaves the index unchanged for keys it doesn't handle", () => {
+  assert.equal(nextRadioIndex(1, "Enter", 3), 1);
+  assert.equal(nextRadioIndex(1, "a", 3), 1);
+});
+
+test("nextRadioIndex is a no-op for a single-option group and for an empty group", () => {
+  assert.equal(nextRadioIndex(0, "ArrowRight", 1), 0);
+  assert.equal(nextRadioIndex(0, "ArrowLeft", 1), 0);
+  assert.equal(nextRadioIndex(0, "ArrowRight", 0), 0);
 });
