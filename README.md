@@ -55,7 +55,9 @@ you *see happen*, not something you infer from a paragraph.
 ## Status
 
 Epics 1 and 2 (the wow moment, plus full `hx-trigger`/`hx-target`/`hx-select`/`hx-indicator`
-preset coverage) are built and verified end-to-end — see
+preset coverage) are built and verified end-to-end, as is shareable-link state, a keyboard
+radiogroup pattern with an aria-live status announcer, and confirmed responsive/subpath
+behavior from Epic 4 — see
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for how it fits together,
 [`docs/VISION.md`](docs/VISION.md) for the full design,
 [`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction, and
