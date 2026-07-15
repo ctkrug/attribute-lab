@@ -1,4 +1,4 @@
-.PHONY: build run test vet fmt
+.PHONY: build run test test-go test-js vet fmt
 
 build:
 	go build -o bin/attribute-lab .
@@ -6,8 +6,13 @@ build:
 run: build
 	./bin/attribute-lab
 
-test:
+test: test-go test-js
+
+test-go:
 	go test ./...
+
+test-js:
+	node --test static/js/*.test.mjs
 
 vet:
 	go vet ./...
