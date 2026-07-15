@@ -32,6 +32,41 @@ export function demoUrl({ swap, target = "self", select = false, indicator = fal
 }
 
 /**
+ * Encodes a full preset state into a URL query string (no leading "?") so
+ * the current demo configuration is shareable as a link. Field order is
+ * fixed for stable, diffable URLs across saves.
+ */
+export function encodePresetState(state) {
+  const params = new URLSearchParams();
+  params.set("swap", state.swap);
+  params.set("trigger", state.trigger);
+  params.set("target", state.target);
+  params.set("select", state.select ? "1" : "0");
+  params.set("indicator", state.indicator ? "1" : "0");
+  return params.toString();
+}
+
+/**
+ * Decodes a URL query string back into a preset state, falling back to
+ * `DEFAULT_PRESET_STATE` field-by-field for any value that's missing or not
+ * one of the known presets — a malformed or hand-edited URL degrades to the
+ * default demo instead of producing a broken or crashing page.
+ */
+export function decodePresetState(search) {
+  const params = new URLSearchParams(search);
+  const swap = params.get("swap");
+  const trigger = params.get("trigger");
+  const target = params.get("target");
+  return {
+    swap: SWAP_STYLES.includes(swap) ? swap : DEFAULT_PRESET_STATE.swap,
+    trigger: TRIGGER_PRESETS.includes(trigger) ? trigger : DEFAULT_PRESET_STATE.trigger,
+    target: TARGET_PRESETS.includes(target) ? target : DEFAULT_PRESET_STATE.target,
+    select: params.get("select") === "1",
+    indicator: params.get("indicator") === "1",
+  };
+}
+
+/**
  * Builds the hx-trigger attribute value for a given trigger preset. "delay"
  * still fires on click, just 500ms after it — hx-trigger's modifier syntax
  * is a single space-separated string, so this is the whole reason the
