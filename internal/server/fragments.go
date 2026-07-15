@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"sync/atomic"
+	"time"
 )
 
 // demoGen is a process-wide counter stamped into every fragment response so
@@ -14,6 +15,11 @@ import (
 // recent request (data-gen match), independent of htmx's internal swap
 // bookkeeping.
 var demoGen int64
+
+// demoIndicatorDelay is how long the indicator=1 preset artificially holds
+// the response, long enough for a human to see the hx-indicator loading
+// state land and clear. A var, not a const, so tests can shrink it.
+var demoIndicatorDelay = 600 * time.Millisecond
 
 // swapStyle is the set of hx-swap values the demo fragment endpoint knows
 // how to render distinct markup for.
@@ -77,6 +83,10 @@ func handleDemo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	selectable := query.Get("select") == "1"
+
+	if query.Get("indicator") == "1" {
+		time.Sleep(demoIndicatorDelay)
+	}
 
 	gen := atomic.AddInt64(&demoGen, 1)
 
