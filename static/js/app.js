@@ -30,6 +30,10 @@ function applyPreset(swap) {
   const target = document.getElementById("demo-el");
   target.setAttribute("hx-get", demoUrlForSwap(swap));
   target.setAttribute("hx-swap", swap);
+  // htmx resolves and caches an element's verb/path the first time it
+  // processes it; changing the hx-get attribute afterward is invisible
+  // until the element is reprocessed, or the old URL keeps firing.
+  htmx.process(target);
 
   swapToggle.querySelectorAll(".swap-toggle__option").forEach((btn) => {
     const isActive = btn.dataset.swap === swap;
