@@ -94,7 +94,7 @@ polish on top of a working demo, not a prerequisite to it.
 
 ## Epic 4 — Deploy and accessibility
 
-- [ ] **4.1 — Responsive composition at phone, tablet, and desktop**
+- [x] **4.1 — Responsive composition at phone, tablet, and desktop**
   The full app (preset picker, demo element, both panels) is usable and composed with no
   dead space at 390×844, 768×1024, and 1440×900.
   - No horizontal scroll and no element overlap at any of the three widths.
