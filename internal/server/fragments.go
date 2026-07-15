@@ -72,7 +72,7 @@ func renderDemoFragment(swap swapStyle, gen int64) string {
 
 	return fmt.Sprintf(
 		`<button id="demo-el" class="demo-el" data-gen="%d" `+
-			`hx-get="/api/demo?swap=outerHTML" hx-target="#demo-el" hx-swap="outerHTML">%s</button>`,
+			`hx-get="api/demo?swap=outerHTML" hx-target="#demo-el" hx-swap="outerHTML">%s</button>`,
 		gen, content,
 	)
 }

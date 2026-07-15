@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
+  <base href="./" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Click hx-* attribute presets on a live demo element and watch the real network request and DOM patch animate in sync." />
   <meta property="og:title" content="Attribute Lab" />
@@ -36,7 +37,7 @@
         <p class="zone__annotation">LIVE ELEMENT</p>
         <div class="demo-stage">
           <button id="demo-el" class="demo-el" data-gen="0"
-            hx-get="/api/demo?swap=innerHTML"
+            hx-get="api/demo?swap=innerHTML"
             hx-target="#demo-el"
             hx-swap="innerHTML"
             hx-trigger="click">
