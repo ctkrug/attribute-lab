@@ -347,8 +347,12 @@ body {
 
 /* The external hx-target destination: dashed and muted while idle (self
    target active), solid and lit once the target preset actually points at
-   it, so which element will receive the next swap is legible at a glance. */
-.demo-target-external {
+   it, so which element will receive the next swap is legible at a glance.
+   The emphasis/annotation live on this stable wrapper rather than on
+   #demo-target-external itself, which htmx replaces wholesale on every
+   outerHTML swap — anything placed on the swapped node directly would be
+   discarded along with it. */
+.external-target-wrap {
   margin-top: var(--space-6);
   width: 100%;
   max-width: 320px;
@@ -357,23 +361,26 @@ body {
   border: 1px dashed var(--line);
   border-radius: var(--radius);
   color: var(--text-muted);
-  font-family: var(--font-mono);
-  font-size: var(--step--1);
   text-align: center;
   transition: border-color var(--motion-ui), color var(--motion-ui), box-shadow var(--motion-ui);
 }
 
-.demo-target-external .zone__annotation--inline {
+.external-target-wrap .zone__annotation--inline {
   position: static;
   display: block;
   margin-bottom: var(--space-2);
 }
 
-.demo-target-external.is-active-target {
+.external-target-wrap.is-active-target {
   border-style: solid;
   border-color: var(--accent);
   color: var(--text);
   box-shadow: inset 0 0 0 1px rgba(94, 200, 242, 0.15);
+}
+
+.demo-target-external {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
 }
 
 .demo-target-external.is-flashing {

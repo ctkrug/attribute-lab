@@ -21,7 +21,6 @@ const fields = {
 const connectorNetwork = document.querySelector(".connector--network");
 const connectorPatch = document.querySelector(".connector--patch");
 const rigPulse = document.querySelector(".rig-pulse");
-const externalTargetZone = document.getElementById("demo-target-external");
 
 // The full preset picker's state. Each field is driven by one preset group
 // in the toolbar and, together, they determine every hx-* attribute on the
@@ -83,8 +82,16 @@ function setSwitchState(btn, isOn) {
 // its default after the very first outerHTML fire.
 function applyPreset() {
   syncDemoElAttributes();
-  if (externalTargetZone) {
-    externalTargetZone.classList.toggle("is-active-target", presetState.target === "external");
+  updateExternalTargetEmphasis();
+}
+
+// Toggled on the stable .external-target-wrap, not #demo-target-external
+// itself: an outerHTML swap replaces that inner node wholesale (see
+// fragments.go), so a class placed on it would vanish along with it.
+function updateExternalTargetEmphasis() {
+  const wrap = document.querySelector(".external-target-wrap");
+  if (wrap) {
+    wrap.classList.toggle("is-active-target", presetState.target === "external");
   }
 }
 
@@ -138,7 +145,19 @@ document.body.addEventListener("htmx:afterRequest", (evt) => {
 
 document.body.addEventListener("htmx:afterSwap", () => {
   syncDemoElAttributes();
-  requestAnimationFrame(renderPatchPanel);
+});
+
+// htmx:afterSettle (not afterSwap) is where class-list changes on the
+// swapped element belong: for an outerHTML swap, htmx captures the newly
+// inserted element's class list right after insertion and re-applies that
+// captured string once settling finishes, to strip its own transitional
+// htmx-swapping/htmx-added/htmx-settling classes. A class change made
+// during afterSwap races that capture and gets silently discarded; waiting
+// for afterSettle guarantees htmx's own cleanup has already happened.
+// (updateExternalTargetEmphasis doesn't need this treatment since it now
+// targets the stable .external-target-wrap, never the swapped node.)
+document.body.addEventListener("htmx:afterSettle", () => {
+  renderPatchPanel();
 });
 
 function renderPatchPanel() {
