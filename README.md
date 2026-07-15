@@ -26,8 +26,8 @@ you *see happen*, not something you infer from a paragraph.
 - A small **Go** server exposes a handful of demo endpoints that return htmx-flavored HTML
   fragments (the same kind of responses a real htmx backend would send).
 - The frontend is plain **HTMX** wired to a live demo element. A lightweight instrumentation
-  layer taps `htmx:beforeRequest` / `htmx:afterRequest` / `htmx:beforeSwap` /
-  `htmx:afterSwap` to drive two synced panels:
+  layer taps `htmx:configRequest` / `htmx:afterRequest` / `htmx:afterSwap` to drive two
+  synced panels:
   - **Network panel** — method, URL, request headers, response status, response body.
   - **DOM patch panel** — the live element, with swapped nodes flash-highlighted the
     instant the swap lands.
@@ -36,11 +36,11 @@ you *see happen*, not something you infer from a paragraph.
 
 ## Planned features
 
-- [ ] Preset picker covering the core `hx-*` surface: `hx-get`/`hx-post`, `hx-trigger`,
-      `hx-swap` (all swap strategies), `hx-target`, `hx-select`, `hx-indicator`.
-- [ ] Live network panel: real request/response, not a mock — driven by htmx's own events.
-- [ ] Live DOM patch panel: flash-highlight of exactly the nodes htmx swapped.
-- [ ] Side-by-side sync: request fires and patch highlight land within the same visible beat.
+- [x] Preset picker: `hx-swap` toggle (innerHTML ⇄ outerHTML) — the wow moment.
+- [x] Live network panel: real request/response, not a mock — driven by htmx's own events.
+- [x] Live DOM patch panel: flash-highlight of exactly the nodes htmx swapped.
+- [x] Side-by-side sync: request fires and patch highlight land within the same visible beat.
+- [ ] Broader preset coverage: `hx-trigger`, `hx-target`, `hx-select`, `hx-indicator`.
 - [ ] Swap-strategy comparison mode: fire the same trigger against two swap strategies at once.
 - [ ] Shareable preset links (state encoded in the URL).
 
@@ -49,13 +49,16 @@ you *see happen*, not something you infer from a paragraph.
 - **Backend:** Go (`net/http`, stdlib only where practical) serving htmx fragment endpoints
   and the static frontend.
 - **Frontend:** HTMX + vanilla JS/CSS — no framework, no build step required to run.
-- **Tests:** Go's built-in `testing` package for handler/fragment behavior.
+- **Tests:** Go's built-in `testing` package for handler/fragment behavior, plus
+  `node --test` for the pure instrumentation-logic helpers.
 
 ## Status
 
-Early scaffold — see [`docs/VISION.md`](docs/VISION.md) for the full design,
+Epic 1 (the wow moment) is built and verified end-to-end — see
+[`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for how it fits together,
+[`docs/VISION.md`](docs/VISION.md) for the full design,
 [`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction, and
-[`docs/BACKLOG.md`](docs/BACKLOG.md) for the build plan.
+[`docs/BACKLOG.md`](docs/BACKLOG.md) for what's left.
 
 ## License
 
