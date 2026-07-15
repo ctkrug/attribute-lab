@@ -86,6 +86,24 @@ query string (`swap`, `target`, `select=1`, `indicator=1`).
    `stroke-dashoffset` CSS animation reads as the line drawing itself rather than marching dashes.
    Below ~1024px the diagonal lines are hidden in favor of `.rig-pulse`, a simple vertical bar.
 
+## Accessibility
+
+The three `.preset-toggle` groups are real ARIA radiogroups, not just visually-grouped
+buttons: `app.js: setActiveToggleOption` gives only the checked option `tabindex="0"`
+(the rest get `-1`), and `handleRadiogroupKeydown` (backed by the pure `lab-core.mjs:
+nextRadioIndex`) handles Left/Right/Up/Down/Home/End to move and select within the group.
+This is the standard WAI-ARIA roving-tabindex pattern — Tab enters/exits each group in a
+single stop, matching what the `role="radiogroup"`/`role="radio"` markup already promised
+(before this, every individual radio button was its own Tab stop, which contradicts the
+announced role).
+
+A screen-reader-only `[data-field="status-announcer"]` region (`aria-live="polite"`,
+`.visually-hidden`) is updated once per request/patch cycle by `app.js:
+announceRequestOutcome`, via the pure `lab-core.mjs: describeRequestOutcome`. It's
+deliberately a short summary sentence rather than the raw response body or patch markup —
+a live region re-reads its entire content on every change, so dumping verbose HTML into it
+would be unusable with a screen reader.
+
 ## Shareable preset links
 
 `presetState` is seeded on load from `window.location.search` via `lab-core.mjs:
