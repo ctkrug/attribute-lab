@@ -10,7 +10,6 @@ import {
   splitHighlightSegments,
   encodePresetState,
   decodePresetState,
-  DEFAULT_PRESET_STATE,
 } from "./lab-core.mjs";
 
 const fields = {
@@ -70,6 +69,20 @@ function setSwitchState(btn, isOn) {
   btn.classList.toggle("is-on", isOn);
   btn.setAttribute("aria-checked", String(isOn));
   btn.querySelector(".preset-switch__state").textContent = isOn ? "on" : "off";
+}
+
+// Reconciles the preset bar's visible controls with presetState as seeded
+// from the URL — without this, a shared link would drive the demo element
+// correctly (applyPreset runs regardless) but the toggle/switch chips would
+// still show the hardcoded HTML defaults instead of the state actually in
+// effect.
+function hydrateControlsFromState() {
+  document.querySelectorAll(".preset-toggle").forEach((group) => {
+    setActiveToggleOption(group, presetState[group.dataset.preset]);
+  });
+  document.querySelectorAll(".preset-switch").forEach((btn) => {
+    setSwitchState(btn, presetState[btn.dataset.presetSwitch]);
+  });
 }
 
 // Applies the current presetState to the live demo element and its
@@ -240,5 +253,6 @@ function setLine(line, fromRect, toRect, rigRect) {
 }
 
 window.addEventListener("resize", positionConnectors);
+hydrateControlsFromState();
 applyPreset();
 positionConnectors();
