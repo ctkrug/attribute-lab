@@ -27,14 +27,11 @@ const rigPulse = document.querySelector(".rig-pulse");
 
 // The full preset picker's state. Each field is driven by one preset group
 // in the toolbar and, together, they determine every hx-* attribute on the
-// demo element — see syncDemoElAttributes().
-const presetState = {
-  swap: "innerHTML",
-  trigger: "click",
-  target: "self",
-  select: false,
-  indicator: false,
-};
+// demo element — see syncDemoElAttributes(). Seeded from the URL so a shared
+// link reproduces the exact demo it was copied from; decodePresetState
+// falls back to DEFAULT_PRESET_STATE field-by-field for anything missing or
+// malformed, so a bad URL never crashes the page.
+const presetState = { ...decodePresetState(window.location.search) };
 
 // Captured at request time (rather than read fresh at afterSwap) so a
 // preset change mid-flight can't misattribute which target/swap the
