@@ -3,16 +3,23 @@
 // `node --test`, independent of a browser.
 
 export const SWAP_STYLES = ["innerHTML", "outerHTML"];
+export const TARGET_PRESETS = ["self", "external"];
 
 /**
- * Builds the demo endpoint URL for a given swap style. Relative (no leading
- * slash) so it resolves correctly under a subpath deployment.
+ * Builds the demo endpoint URL for a given preset combination. Relative (no
+ * leading slash) so it resolves correctly under a subpath deployment.
  */
-export function demoUrlForSwap(swap) {
+export function demoUrl({ swap, target = "self", select = false, indicator = false }) {
   if (!SWAP_STYLES.includes(swap)) {
     throw new RangeError(`unsupported swap style: ${swap}`);
   }
-  return `api/demo?swap=${swap}`;
+  if (!TARGET_PRESETS.includes(target)) {
+    throw new RangeError(`unsupported target preset: ${target}`);
+  }
+  const params = new URLSearchParams({ swap, target });
+  if (select) params.set("select", "1");
+  if (indicator) params.set("indicator", "1");
+  return `api/demo?${params.toString()}`;
 }
 
 /**

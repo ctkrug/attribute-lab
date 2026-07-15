@@ -1,21 +1,44 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import {
-  demoUrlForSwap,
+  demoUrl,
   statusClass,
   parseResponseHeaders,
   escapeHtml,
   splitHighlightSegments,
 } from "./lab-core.mjs";
 
-test("demoUrlForSwap builds a relative, subpath-safe URL", () => {
-  assert.equal(demoUrlForSwap("innerHTML"), "api/demo?swap=innerHTML");
-  assert.equal(demoUrlForSwap("outerHTML"), "api/demo?swap=outerHTML");
+test("demoUrl builds a relative, subpath-safe URL defaulting target to self", () => {
+  assert.equal(demoUrl({ swap: "innerHTML" }), "api/demo?swap=innerHTML&target=self");
+  assert.equal(demoUrl({ swap: "outerHTML" }), "api/demo?swap=outerHTML&target=self");
 });
 
-test("demoUrlForSwap rejects unknown swap styles", () => {
-  assert.throws(() => demoUrlForSwap("bogus"), RangeError);
-  assert.throws(() => demoUrlForSwap(""), RangeError);
+test("demoUrl includes an explicit external target", () => {
+  assert.equal(
+    demoUrl({ swap: "innerHTML", target: "external" }),
+    "api/demo?swap=innerHTML&target=external"
+  );
+});
+
+test("demoUrl appends select and indicator only when truthy", () => {
+  assert.equal(
+    demoUrl({ swap: "innerHTML", select: true }),
+    "api/demo?swap=innerHTML&target=self&select=1"
+  );
+  assert.equal(
+    demoUrl({ swap: "innerHTML", indicator: true }),
+    "api/demo?swap=innerHTML&target=self&indicator=1"
+  );
+  assert.equal(
+    demoUrl({ swap: "innerHTML", select: true, indicator: true }),
+    "api/demo?swap=innerHTML&target=self&select=1&indicator=1"
+  );
+});
+
+test("demoUrl rejects unknown swap styles and target presets", () => {
+  assert.throws(() => demoUrl({ swap: "bogus" }), RangeError);
+  assert.throws(() => demoUrl({ swap: "" }), RangeError);
+  assert.throws(() => demoUrl({ swap: "innerHTML", target: "bogus" }), RangeError);
 });
 
 test("statusClass buckets 2xx as success and 4xx/5xx as error", () => {
