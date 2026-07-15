@@ -132,6 +132,14 @@ root. Every asset reference (`css/style.css`, `js/app.js`) and the demo fragment
 (`api/demo`) is relative (no leading slash), and `<base href="./">` in `index.html` makes that
 resolution correct even if the deployed URL is visited without a trailing slash.
 
+There's no separate static export step: `make build` produces one self-contained binary
+(`bin/attribute-lab`) with `static/` embedded via `//go:embed`, and that binary serves both
+the frontend and the `/api/demo`/`/healthz` endpoints itself. The reverse proxy in front of
+it strips the `/attribute-lab` prefix before forwarding to the binary's own root-relative
+routes (e.g. nginx `location /attribute-lab/ { proxy_pass http://127.0.0.1:<port>/; }`) —
+this was verified locally by fronting a running instance with a prefix-stripping proxy and
+confirming every asset request and the `/api/demo` fetch resolve with no 404s.
+
 ## Running it
 
 ```
