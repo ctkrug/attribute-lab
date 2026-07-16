@@ -49,19 +49,22 @@ you *see happen*, not something you infer from a paragraph.
 ```
 make run          # builds bin/attribute-lab and starts it on :8080
 PORT=8090 make run # or pick a port explicitly
-make test          # go test ./... + node --test static/js/*.test.mjs
+make test          # go test -race ./... + node --test static/js/*.test.mjs
 ```
 
 No database, no build step for the frontend — `static/` is embedded straight into the
-binary via `go:embed`, so `make run` is the entire "getting started."
+binary via `go:embed`, so `make run` needs nothing beyond a Go toolchain. `make test`
+additionally needs Node — `test-js` runs `npm install` on first use (only fast-check, a
+dev-only property-testing library, is installed; nothing ships in the binary).
 
 ## Stack
 
 - **Backend:** Go (`net/http`, stdlib only where practical) serving htmx fragment endpoints
   and the static frontend.
 - **Frontend:** HTMX + vanilla JS/CSS — no framework, no build step required to run.
-- **Tests:** Go's built-in `testing` package for handler/fragment behavior, plus
-  `node --test` for the pure instrumentation-logic helpers.
+- **Tests:** Go's built-in `testing` package (with `-race`) for handler/fragment behavior,
+  plus `node --test` — including `fast-check` property-based tests — for the pure
+  instrumentation-logic helpers.
 
 ## Status
 
