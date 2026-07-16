@@ -19,6 +19,7 @@ const fields = {
   url: document.querySelector('[data-field="url"]'),
   status: document.querySelector('[data-field="status"]'),
   requestHeaders: document.querySelector('[data-field="request-headers"]'),
+  responseHeaders: document.querySelector('[data-field="response-headers"]'),
   responseBody: document.querySelector('[data-field="response-body"]'),
   patchMarkup: document.querySelector('[data-field="patch-markup"]'),
   statusAnnouncer: document.querySelector('[data-field="status-announcer"]'),
@@ -193,7 +194,9 @@ document.body.addEventListener("htmx:afterRequest", (evt) => {
   fields.status.className = `status-chip ${statusClass(status)}`.trim();
   fields.responseBody.textContent = xhr.responseText;
 
-  void parseResponseHeaders(xhr.getAllResponseHeaders());
+  fields.responseHeaders.textContent = parseResponseHeaders(xhr.getAllResponseHeaders())
+    .map(([name, value]) => `${name}: ${value}`)
+    .join("\n");
   fireConnectors();
 });
 
