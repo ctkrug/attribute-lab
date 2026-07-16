@@ -79,6 +79,11 @@ test("statusClass returns empty string for anything else", () => {
   assert.equal(statusClass(302), "");
 });
 
+test("statusClass returns empty string for negative numbers and NaN without throwing", () => {
+  assert.equal(statusClass(-1), "");
+  assert.equal(statusClass(NaN), "");
+});
+
 test("parseResponseHeaders parses the raw XHR header block", () => {
   const raw = "Content-Type: text/html; charset=utf-8\r\nX-Gen: 3\r\n";
   assert.deepEqual(parseResponseHeaders(raw), [
