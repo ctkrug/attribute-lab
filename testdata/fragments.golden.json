@@ -1,0 +1,66 @@
+[
+  {
+    "name": "innerHTML/self/select=false",
+    "swap": "innerHTML",
+    "target": "self",
+    "gen": 1,
+    "selectable": false,
+    "body": "\u003cspan class=\"demo-el__label\" data-gen=\"1\"\u003eRequest #1 handled by \u003ccode\u003einnerHTML\u003c/code\u003e \u0026rarr; \u003ccode\u003eself\u003c/code\u003e\u003c/span\u003e"
+  },
+  {
+    "name": "innerHTML/self/select=true",
+    "swap": "innerHTML",
+    "target": "self",
+    "gen": 2,
+    "selectable": true,
+    "body": "\u003cp class=\"fragment-noise\" aria-hidden=\"true\"\u003e// not selected: preceding sibling\u003c/p\u003e\u003cspan class=\"demo-el__label\" data-fragment-content data-gen=\"2\"\u003eRequest #2 handled by \u003ccode\u003einnerHTML\u003c/code\u003e \u0026rarr; \u003ccode\u003eself\u003c/code\u003e\u003c/span\u003e\u003cp class=\"fragment-noise\" aria-hidden=\"true\"\u003e// not selected: trailing sibling\u003c/p\u003e"
+  },
+  {
+    "name": "innerHTML/external/select=false",
+    "swap": "innerHTML",
+    "target": "external",
+    "gen": 3,
+    "selectable": false,
+    "body": "\u003cspan class=\"demo-el__label\" data-gen=\"3\"\u003eRequest #3 handled by \u003ccode\u003einnerHTML\u003c/code\u003e \u0026rarr; \u003ccode\u003eexternal\u003c/code\u003e\u003c/span\u003e"
+  },
+  {
+    "name": "innerHTML/external/select=true",
+    "swap": "innerHTML",
+    "target": "external",
+    "gen": 4,
+    "selectable": true,
+    "body": "\u003cp class=\"fragment-noise\" aria-hidden=\"true\"\u003e// not selected: preceding sibling\u003c/p\u003e\u003cspan class=\"demo-el__label\" data-fragment-content data-gen=\"4\"\u003eRequest #4 handled by \u003ccode\u003einnerHTML\u003c/code\u003e \u0026rarr; \u003ccode\u003eexternal\u003c/code\u003e\u003c/span\u003e\u003cp class=\"fragment-noise\" aria-hidden=\"true\"\u003e// not selected: trailing sibling\u003c/p\u003e"
+  },
+  {
+    "name": "outerHTML/self/select=false",
+    "swap": "outerHTML",
+    "target": "self",
+    "gen": 5,
+    "selectable": false,
+    "body": "\u003cbutton id=\"demo-el\" class=\"demo-el\" data-gen=\"5\" hx-get=\"api/demo?swap=outerHTML\u0026amp;target=self\" hx-target=\"#demo-el\" hx-swap=\"outerHTML\"\u003e\u003cspan class=\"demo-el__label\" data-gen=\"5\"\u003eRequest #5 handled by \u003ccode\u003eouterHTML\u003c/code\u003e \u0026rarr; \u003ccode\u003eself\u003c/code\u003e\u003c/span\u003e\u003c/button\u003e"
+  },
+  {
+    "name": "outerHTML/self/select=true",
+    "swap": "outerHTML",
+    "target": "self",
+    "gen": 6,
+    "selectable": true,
+    "body": "\u003cp class=\"fragment-noise\" aria-hidden=\"true\"\u003e// not selected: preceding sibling\u003c/p\u003e\u003cbutton id=\"demo-el\" class=\"demo-el\" data-fragment-content data-gen=\"6\" hx-get=\"api/demo?swap=outerHTML\u0026amp;target=self\" hx-target=\"#demo-el\" hx-swap=\"outerHTML\"\u003e\u003cspan class=\"demo-el__label\" data-gen=\"6\"\u003eRequest #6 handled by \u003ccode\u003eouterHTML\u003c/code\u003e \u0026rarr; \u003ccode\u003eself\u003c/code\u003e\u003c/span\u003e\u003c/button\u003e\u003cp class=\"fragment-noise\" aria-hidden=\"true\"\u003e// not selected: trailing sibling\u003c/p\u003e"
+  },
+  {
+    "name": "outerHTML/external/select=false",
+    "swap": "outerHTML",
+    "target": "external",
+    "gen": 7,
+    "selectable": false,
+    "body": "\u003cdiv id=\"demo-target-external\" class=\"demo-target-external\" data-gen=\"7\"\u003e\u003cspan class=\"demo-el__label\" data-gen=\"7\"\u003eRequest #7 handled by \u003ccode\u003eouterHTML\u003c/code\u003e \u0026rarr; \u003ccode\u003eexternal\u003c/code\u003e\u003c/span\u003e\u003c/div\u003e"
+  },
+  {
+    "name": "outerHTML/external/select=true",
+    "swap": "outerHTML",
+    "target": "external",
+    "gen": 8,
+    "selectable": true,
+    "body": "\u003cp class=\"fragment-noise\" aria-hidden=\"true\"\u003e// not selected: preceding sibling\u003c/p\u003e\u003cdiv id=\"demo-target-external\" class=\"demo-target-external\" data-fragment-content data-gen=\"8\"\u003e\u003cspan class=\"demo-el__label\" data-gen=\"8\"\u003eRequest #8 handled by \u003ccode\u003eouterHTML\u003c/code\u003e \u0026rarr; \u003ccode\u003eexternal\u003c/code\u003e\u003c/span\u003e\u003c/div\u003e\u003cp class=\"fragment-noise\" aria-hidden=\"true\"\u003e// not selected: trailing sibling\u003c/p\u003e"
+  }
+]
