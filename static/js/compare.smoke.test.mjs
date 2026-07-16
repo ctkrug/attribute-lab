@@ -73,6 +73,32 @@ test("toggling compare mode swaps the visible rig and disables single-view prese
   }
 });
 
+test("leaving comparison mode restores the single view and re-enables presets", async () => {
+  const { document } = await boot("");
+  const toggle = document.querySelector("[data-compare-toggle]");
+  toggle.click(); // enter
+  toggle.click(); // leave
+
+  assert.equal(document.getElementById("compare-rig").hidden, true);
+  assert.equal(document.querySelector(".rig").hidden, false);
+  assert.equal(toggle.getAttribute("aria-checked"), "false");
+  document
+    .querySelectorAll('.preset-toggle[data-preset="swap"] .preset-toggle__option')
+    .forEach((btn) => assert.equal(btn.disabled, false));
+});
+
+test("toggling hx-select while comparing re-syncs both labs' URLs", async () => {
+  const { document } = await boot("?compare=1");
+  document.querySelector('[data-preset-switch="select"]').click();
+
+  for (const id of ["cmp-inner-el", "cmp-outer-el"]) {
+    assert.match(document.getElementById(id).getAttribute("hx-get"), /select=1/);
+    assert.equal(document.getElementById(id).getAttribute("hx-select"), "[data-fragment-content]");
+  }
+  // The shared URL reflects compare mode for a copyable link.
+  assert.match(document.defaultView.location.search, /compare=1/);
+});
+
 test("each lab element carries its own swap strategy, target, and shared trigger", async () => {
   const { document } = await boot("?compare=1");
 
