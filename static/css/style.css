@@ -84,7 +84,45 @@ body {
 }
 
 .site-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
   margin-bottom: var(--space-8);
+}
+
+/* A schematic-style call-out button (dashed-to-solid on hover), pinned
+   top-right so the repo is always one click away without competing with the
+   wordmark. */
+.repo-link {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  text-decoration: none;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  transition: border-color var(--motion-ui), color var(--motion-ui);
+}
+
+.repo-link:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.repo-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.repo-link__mark {
+  color: var(--accent);
 }
 
 .wordmark {
@@ -839,5 +877,108 @@ body {
 
   .preset-bar {
     gap: var(--space-2);
+  }
+}
+
+/* Below-the-fold reference copy + FAQ: the same schematic surface as the rig,
+   set at a readable measure so it reads as documentation stamped onto the
+   blueprint rather than a separate marketing page. */
+.prose {
+  margin-top: var(--space-16);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--line);
+}
+
+.prose__inner {
+  max-width: 70ch;
+}
+
+.prose__h2 {
+  margin: var(--space-8) 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--step-2);
+  letter-spacing: -0.01em;
+}
+
+.prose__h2:first-child {
+  margin-top: 0;
+}
+
+.prose__h3 {
+  margin: var(--space-6) 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--step-1);
+  color: var(--accent);
+}
+
+.prose p {
+  margin: 0 0 var(--space-4);
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.prose code,
+.faq code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--accent);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0 var(--space-1);
+}
+
+.prose a,
+.faq a,
+.portfolio-link {
+  color: var(--accent);
+}
+
+.faq {
+  margin: 0;
+}
+
+.faq__q {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.faq__a {
+  margin: var(--space-2) 0 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.site-footer {
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+.portfolio-link {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color var(--motion-ui);
+}
+
+.portfolio-link:hover {
+  color: var(--accent);
+}
+
+.portfolio-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    flex-direction: column;
+    gap: var(--space-3);
   }
 }
