@@ -110,9 +110,19 @@ func renderDemoFragment(swap swapStyle, target targetKind, gen int64, selectable
 		selectAttr = " data-fragment-content"
 	}
 
+	// For innerHTML the label span is itself the swap root, so it — and only
+	// it — carries the hx-select marker. For outerHTML the wrapper below is the
+	// root, so the inner label must stay unmarked: htmx resolves hx-select via
+	// querySelectorAll and appendChild-moves every match, and a second, nested
+	// match would be hoisted out of its wrapper and duplicated.
+	innerSelectAttr := selectAttr
+	if swap != swapInnerHTML {
+		innerSelectAttr = ""
+	}
+
 	content := fmt.Sprintf(
 		`<span class="demo-el__label"%s data-gen="%d">Request #%d handled by <code>%s</code> &rarr; <code>%s</code></span>`,
-		selectAttr, gen, gen, swap, target,
+		innerSelectAttr, gen, gen, swap, target,
 	)
 
 	if swap == swapInnerHTML {
