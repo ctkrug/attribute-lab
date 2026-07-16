@@ -120,6 +120,12 @@ test("a per-lab afterRequest lands only in that lab's readout", async () => {
   const { document } = await boot("?compare=1");
   const inner = document.getElementById("cmp-inner-el");
 
+  // A compare-rig configRequest must not leak into the single view's request
+  // readout — the single-view handlers early-return on compare events.
+  fireHtmxEvent(document, "htmx:configRequest", { elt: inner, verb: "get", path: "api/demo?x", headers: {} });
+  assert.equal(document.querySelector('.zone--network [data-field="method"]').textContent, "—");
+  assert.equal(document.querySelector('.zone--network [data-field="url"]').textContent, "—");
+
   fireHtmxEvent(document, "htmx:afterRequest", {
     elt: inner,
     xhr: { status: 200, responseText: "<span data-gen=\"7\">ok</span>", getAllResponseHeaders: () => "" },
