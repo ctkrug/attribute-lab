@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <base href="./" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="An interactive htmx cheat sheet: click hx-swap and hx-trigger presets and watch the real request and DOM patch fire live, side by side." />
+  <meta property="og:title" content="Swapscope — the htmx cheat sheet you watch run" />
+  <meta property="og:description" content="Click hx-swap and hx-trigger presets on a live element and watch the real request and DOM patch fire, side by side. Not a table you read." />
+  <meta property="og:type" content="website" />
+  <title>Swapscope — the htmx cheat sheet you watch run</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230a1826'/%3E%3Ctext x='16' y='23' font-family='monospace' font-size='20' font-weight='700' fill='%235ec8f2' text-anchor='middle'%3ES%3C/text%3E%3C/svg%3E" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="https://unpkg.com/htmx.org@1.9.12" defer></script>
+  <script src="js/app.js" type="module"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="site-header__brand">
+      <h1 class="wordmark"><span class="wordmark__glyph" aria-hidden="true">⟨S⟩</span>wapscope</h1>
+      <p class="tagline">The htmx cheat sheet you watch run. Pick a preset, see the real request and the DOM patch fire.</p>
+    </div>
+    <a class="repo-link" href="https://github.com/ctkrug/attribute-lab" target="_blank" rel="noopener">
+      <svg class="repo-link__mark" viewBox="0 0 16 16" width="16" height="16" aria-hidden="true" fill="currentColor">
+        <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"/>
+      </svg>
+      <span>View on GitHub</span>
+    </a>
+  </header>
+
+  <main id="lab-root">
+    <p class="visually-hidden" role="status" aria-live="polite" data-field="status-announcer"></p>
+
+    <section class="preset-bar" aria-label="hx-* attribute preset picker">
+      <div class="preset-group">
+        <span class="preset-group__label">hx-swap</span>
+        <div class="preset-toggle" data-preset="swap" role="radiogroup" aria-label="swap strategy">
+          <button type="button" class="preset-toggle__option is-active" data-value="innerHTML" role="radio" aria-checked="true">innerHTML</button>
+          <button type="button" class="preset-toggle__option" data-value="outerHTML" role="radio" aria-checked="false">outerHTML</button>
+        </div>
+      </div>
+
+      <div class="preset-group">
+        <span class="preset-group__label">hx-trigger</span>
+        <div class="preset-toggle" data-preset="trigger" role="radiogroup" aria-label="trigger">
+          <button type="button" class="preset-toggle__option is-active" data-value="click" role="radio" aria-checked="true">click</button>
+          <button type="button" class="preset-toggle__option" data-value="revealed" role="radio" aria-checked="false">revealed</button>
+          <button type="button" class="preset-toggle__option" data-value="delay" role="radio" aria-checked="false">delay:500ms</button>
+        </div>
+      </div>
+
+      <div class="preset-group">
+        <span class="preset-group__label">hx-target</span>
+        <div class="preset-toggle" data-preset="target" role="radiogroup" aria-label="target">
+          <button type="button" class="preset-toggle__option is-active" data-value="self" role="radio" aria-checked="true">self</button>
+          <button type="button" class="preset-toggle__option" data-value="external" role="radio" aria-checked="false">external</button>
+        </div>
+      </div>
+
+      <div class="preset-group">
+        <span class="preset-group__label">hx-select</span>
+        <button type="button" class="preset-switch" data-preset-switch="select" role="switch" aria-checked="false" aria-label="hx-select">
+          <span class="preset-switch__track" aria-hidden="true"></span>
+          <span class="preset-switch__state">off</span>
+        </button>
+      </div>
+
+      <div class="preset-group">
+        <span class="preset-group__label">hx-indicator</span>
+        <button type="button" class="preset-switch" data-preset-switch="indicator" role="switch" aria-checked="false" aria-label="hx-indicator">
+          <span class="preset-switch__track" aria-hidden="true"></span>
+          <span class="preset-switch__state">off</span>
+        </button>
+      </div>
+
+      <div class="preset-group">
+        <span class="preset-group__label">mode</span>
+        <button type="button" class="mode-toggle" data-compare-toggle role="switch" aria-checked="false">
+          <span class="mode-toggle__glyph" aria-hidden="true">⇋</span>
+          <span data-field="compare-label">compare swaps</span>
+        </button>
+      </div>
+
+      <button type="button" class="copy-link-btn" data-copy-link>
+        <span aria-hidden="true">⧉</span>
+        <span data-field="copy-link-label" aria-live="polite">copy link</span>
+      </button>
+    </section>
+
+    <div class="rig">
+      <section class="zone zone--stage" aria-label="live demo element">
+        <p class="zone__annotation">LIVE ELEMENT</p>
+        <div class="demo-stage">
+          <button id="demo-el" class="demo-el" data-gen="0"
+            hx-get="api/demo?swap=innerHTML&amp;target=self"
+            hx-target="#demo-el"
+            hx-swap="innerHTML"
+            hx-trigger="click"
+            hx-indicator="#demo-indicator">
+            <span class="demo-el__label" data-gen="0">Fire request</span>
+          </button>
+          <span id="demo-indicator" class="htmx-indicator" aria-hidden="true">&#9679; awaiting response&hellip;</span>
+        </div>
+        <div class="external-target-wrap">
+          <p class="zone__annotation zone__annotation--inline">EXTERNAL TARGET</p>
+          <div id="demo-target-external" class="demo-target-external" data-gen="0">
+            <span class="demo-el__label" data-gen="0">idle — select the "external" hx-target preset above</span>
+          </div>
+        </div>
+      </section>
+
+      <svg class="connectors" aria-hidden="true">
+        <line class="connector connector--network" x1="0" y1="0" x2="0" y2="0" />
+        <line class="connector connector--patch" x1="0" y1="0" x2="0" y2="0" />
+      </svg>
+
+      <div class="rig-pulse" aria-hidden="true"></div>
+
+      <div class="panels">
+        <section class="zone zone--network" aria-label="network panel">
+          <p class="zone__annotation">REQUEST →</p>
+          <dl class="network-panel">
+            <div class="network-panel__row">
+              <dt>method</dt>
+              <dd data-field="method">—</dd>
+            </div>
+            <div class="network-panel__row">
+              <dt>url</dt>
+              <dd data-field="url">—</dd>
+            </div>
+            <div class="network-panel__row">
+              <dt>status</dt>
+              <dd data-field="status" class="status-chip">—</dd>
+            </div>
+          </dl>
+          <p class="network-panel__label">request headers</p>
+          <pre class="network-panel__code" data-field="request-headers">—</pre>
+          <p class="network-panel__label">response headers</p>
+          <pre class="network-panel__code" data-field="response-headers">—</pre>
+          <p class="network-panel__label">response body</p>
+          <pre class="network-panel__code" data-field="response-body">—</pre>
+        </section>
+
+        <section class="zone zone--patch" aria-label="DOM patch panel">
+          <p class="zone__annotation">PATCH →</p>
+          <pre class="patch-panel__code" data-field="patch-markup">—</pre>
+        </section>
+      </div>
+    </div>
+
+    <div class="compare-rig" id="compare-rig" hidden>
+      <div class="compare-bar">
+        <p class="compare-bar__hint">Same request, two swap strategies, side by side.</p>
+        <button type="button" class="compare-fire" id="compare-fire">
+          <span aria-hidden="true">▶</span> Fire both
+        </button>
+      </div>
+
+      <div class="compare-grid">
+        <section class="compare-lab" data-lab-swap="innerHTML" aria-label="innerHTML comparison lab">
+          <p class="compare-lab__title"><code>hx-swap="innerHTML"</code></p>
+          <div class="compare-lab__stage">
+            <button class="demo-el demo-el--compare" data-lab-el id="cmp-inner-el" data-gen="0"
+              hx-get="api/demo?swap=innerHTML&amp;target=self"
+              hx-target="#cmp-inner-el"
+              hx-swap="innerHTML"
+              hx-trigger="click from:#compare-fire"
+              hx-indicator="#cmp-inner-indicator">
+              <span class="demo-el__label" data-gen="0">idle</span>
+            </button>
+            <span id="cmp-inner-indicator" class="htmx-indicator" aria-hidden="true">&#9679; awaiting response&hellip;</span>
+          </div>
+          <dl class="network-panel network-panel--compare">
+            <div class="network-panel__row"><dt>status</dt><dd data-field="status" class="status-chip">—</dd></div>
+          </dl>
+          <p class="network-panel__label">response body</p>
+          <pre class="network-panel__code" data-field="response-body">—</pre>
+          <p class="network-panel__label">DOM patch</p>
+          <pre class="patch-panel__code" data-field="patch-markup">—</pre>
+        </section>
+
+        <section class="compare-lab" data-lab-swap="outerHTML" aria-label="outerHTML comparison lab">
+          <p class="compare-lab__title"><code>hx-swap="outerHTML"</code></p>
+          <div class="compare-lab__stage">
+            <button class="demo-el demo-el--compare" data-lab-el id="cmp-outer-el" data-gen="0"
+              hx-get="api/demo?swap=outerHTML&amp;target=self"
+              hx-target="#cmp-outer-el"
+              hx-swap="outerHTML"
+              hx-trigger="click from:#compare-fire"
+              hx-indicator="#cmp-outer-indicator">
+              <span class="demo-el__label" data-gen="0">idle</span>
+            </button>
+            <span id="cmp-outer-indicator" class="htmx-indicator" aria-hidden="true">&#9679; awaiting response&hellip;</span>
+          </div>
+          <dl class="network-panel network-panel--compare">
+            <div class="network-panel__row"><dt>status</dt><dd data-field="status" class="status-chip">—</dd></div>
+          </dl>
+          <p class="network-panel__label">response body</p>
+          <pre class="network-panel__code" data-field="response-body">—</pre>
+          <p class="network-panel__label">DOM patch</p>
+          <pre class="patch-panel__code" data-field="patch-markup">—</pre>
+        </section>
+      </div>
+    </div>
+  </main>
+
+  <section class="prose" aria-label="About Swapscope">
+    <div class="prose__inner">
+      <h2 class="prose__h2">An htmx cheat sheet you watch run</h2>
+      <p>
+        Most htmx references are a wall of prose: a table of attribute names next to a
+        one-line description. You read that <code>hx-swap="outerHTML"</code> replaces the
+        whole element while <code>innerHTML</code> replaces its children, and then you go
+        write code hoping you remembered which is which. Swapscope turns that table into a
+        working instrument. Pick a preset, fire the demo element, and the real HTTP request
+        and the exact DOM nodes htmx swapped light up side by side.
+      </p>
+      <p>
+        Every value on the network panel comes from the actual request htmx made, read off
+        the <code>XMLHttpRequest</code> in its own lifecycle events. Nothing is faked. The
+        DOM patch panel then flash-highlights the precise node that changed, so the
+        difference between swap strategies is something you see happen rather than something
+        you infer from a paragraph.
+      </p>
+
+      <h3 class="prose__h3">hx-swap examples, live</h3>
+      <p>
+        Toggle <code>hx-swap</code> between <code>innerHTML</code> and <code>outerHTML</code>
+        and switch on compare mode to fire both at once. The two labs sit next to each other:
+        <code>innerHTML</code> keeps the button and replaces its label; <code>outerHTML</code>
+        replaces the whole button, which is why a real backend has to restate its own
+        <code>hx-*</code> attributes in the response or the element stops firing after the
+        first click. Swapscope reproduces that gotcha on a live element so you can watch it,
+        not just read about it. <code>hx-target</code> and <code>hx-select</code> presets show
+        where the response lands and how htmx filters a fragment before the swap.
+      </p>
+
+      <h3 class="prose__h3">hx-trigger examples you can fire</h3>
+      <p>
+        The <code>hx-trigger</code> presets cover the three you reach for most:
+        <code>click</code>, <code>revealed</code>, and a <code>click delay:500ms</code>
+        modifier. Each one rewrites the attribute on the live element and reprocesses it, so
+        you can watch how a trigger modifier changes when the request actually goes out. Turn
+        on <code>hx-indicator</code> to see the loading state land and clear during that delay.
+      </p>
+
+      <h2 class="prose__h2">FAQ</h2>
+      <dl class="faq">
+        <dt class="faq__q">Is this an htmx cheat sheet?</dt>
+        <dd class="faq__a">
+          Yes, an interactive one. Instead of a static table of <code>hx-*</code> attributes,
+          Swapscope lets you click a preset and watch the request and DOM change it produces.
+          The attributes it covers are <code>hx-get</code>, <code>hx-swap</code>,
+          <code>hx-trigger</code>, <code>hx-target</code>, <code>hx-select</code>, and
+          <code>hx-indicator</code>.
+        </dd>
+        <dt class="faq__q">What is the difference between hx-swap innerHTML and outerHTML?</dt>
+        <dd class="faq__a">
+          <code>innerHTML</code> replaces the target element's children and keeps the element
+          itself; <code>outerHTML</code> replaces the entire element, including its tag and
+          attributes. Fire both in compare mode to see the DOM patch for each side by side.
+        </dd>
+        <dt class="faq__q">Can I see hx-trigger examples?</dt>
+        <dd class="faq__a">
+          Pick the <code>hx-trigger</code> preset to switch the live element between
+          <code>click</code>, <code>revealed</code> (fires when scrolled into view), and
+          <code>click delay:500ms</code>. The network panel shows exactly when each one sends
+          its request.
+        </dd>
+        <dt class="faq__q">Does it make real network requests?</dt>
+        <dd class="faq__a">
+          Yes. Locally a small Go server answers the demo endpoint; on this hosted page a
+          service worker answers the same request in the browser with a byte-for-byte port of
+          that Go renderer. Either way htmx issues a genuine request and the panel shows the
+          real response.
+        </dd>
+        <dt class="faq__q">Is Swapscope free and open source?</dt>
+        <dd class="faq__a">
+          Yes, it is MIT licensed. The full source is
+          <a href="https://github.com/ctkrug/attribute-lab">on GitHub</a>.
+        </dd>
+      </dl>
+    </div>
+  </section>
+
+  <footer class="site-footer">
+    <a class="portfolio-link" href="https://apps.charliekrug.com">More by Charlie Krug → apps.charliekrug.com</a>
+  </footer>
+</body>
+</html>

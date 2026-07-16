@@ -1,0 +1,984 @@
+/* docs/DESIGN.md tokens — blueprint/technical direction. */
+
+:root {
+  --bg: #0a1826;
+  --surface-1: #0f2136;
+  --surface-2: #15304a;
+  --line: #254a68;
+  --text: #e8f2fb;
+  --text-muted: #7fa1bd;
+  --accent: #5ec8f2;
+  --accent-support: #f2a65e;
+  --success: #5ef2a6;
+  --danger: #f25e5e;
+
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", monospace;
+  --font-sans: "IBM Plex Sans", -apple-system, "Segoe UI", sans-serif;
+
+  --step--1: 13px;
+  --step-0: 16px;
+  --step-1: 20px;
+  --step-2: 25px;
+  --step-3: 31px;
+  --step-4: 39px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  --radius: 2px;
+  --motion-ui: 180ms ease-out;
+  --motion-connector: 380ms ease-out;
+
+  --grid-line: rgba(37, 74, 104, 0.08);
+}
+
+/* Blueprint graph-paper texture: a faint grid over the deep navy ground,
+   applied to every full-bleed surface so empty space still reads as part
+   of the schematic instead of a blank void. */
+.graph-paper,
+body {
+  background-color: var(--bg);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  background-position: -1px -1px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Screen-reader-only content: kept in the accessibility tree and announced
+   by aria-live, but never visible or able to affect layout. */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: var(--font-sans);
+  font-size: var(--step-0);
+  color: var(--text);
+  padding: var(--space-6);
+  background-attachment: fixed;
+}
+
+.site-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-6);
+  margin-bottom: var(--space-8);
+}
+
+/* A schematic-style call-out button (dashed-to-solid on hover), pinned
+   top-right so the repo is always one click away without competing with the
+   wordmark. */
+.repo-link {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  text-decoration: none;
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  transition: border-color var(--motion-ui), color var(--motion-ui);
+}
+
+.repo-link:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.repo-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.repo-link__mark {
+  color: var(--accent);
+}
+
+.wordmark {
+  margin: 0 0 var(--space-1);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--step-4);
+  letter-spacing: -0.01em;
+}
+
+.wordmark__glyph {
+  color: var(--accent);
+  margin-right: var(--space-2);
+}
+
+.tagline {
+  margin: 0;
+  max-width: 60ch;
+  color: var(--text-muted);
+  font-size: var(--step-1);
+}
+
+/* Five preset groups (swap/trigger/target/select/indicator) wrap onto more
+   than one row once they no longer fit a single 72px strip — still a
+   compact toolbar, just no longer guaranteed single-line at every width. */
+.preset-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4) var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  margin-bottom: var(--space-6);
+  background: var(--surface-1);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.preset-group {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+}
+
+.preset-group__label {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  white-space: nowrap;
+}
+
+.preset-toggle {
+  display: flex;
+  gap: var(--space-2);
+}
+
+.preset-toggle__option {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  cursor: pointer;
+  transition: border-color var(--motion-ui), color var(--motion-ui), background-color var(--motion-ui);
+}
+
+.preset-toggle__option:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.preset-toggle__option:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.preset-toggle__option:active {
+  transform: translateY(1px);
+}
+
+.preset-toggle__option.is-active {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.preset-toggle__option:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* hx-select / hx-indicator: a schematic-style LED toggle rather than an
+   iOS-style pill — the dot lights up (fills, gains a glow) when on, staying
+   in the blueprint idiom instead of borrowing an unrelated visual language. */
+.preset-switch {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  cursor: pointer;
+  transition: border-color var(--motion-ui), color var(--motion-ui), background-color var(--motion-ui);
+}
+
+.preset-switch__track {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--line);
+  transition: background-color var(--motion-ui), box-shadow var(--motion-ui);
+}
+
+.preset-switch:hover {
+  color: var(--text);
+  border-color: var(--accent);
+}
+
+.preset-switch:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.preset-switch:active {
+  transform: translateY(1px);
+}
+
+.preset-switch.is-on {
+  color: var(--bg);
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.preset-switch.is-on .preset-switch__track {
+  background: var(--bg);
+  box-shadow: 0 0 6px 1px rgba(10, 24, 38, 0.6);
+}
+
+.preset-switch:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Pinned to the end of the preset bar via margin-left: auto so it reads as
+   a distinct action ("do something with this state") rather than another
+   preset ("set part of this state"). */
+.copy-link-btn {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  cursor: pointer;
+  transition: border-color var(--motion-ui), color var(--motion-ui), background-color var(--motion-ui);
+}
+
+.copy-link-btn:hover {
+  color: var(--text);
+  border-color: var(--accent-support);
+}
+
+.copy-link-btn:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.copy-link-btn:active {
+  transform: translateY(1px);
+}
+
+.copy-link-btn.is-copied {
+  color: var(--bg);
+  background: var(--accent-support);
+  border-color: var(--accent-support);
+}
+
+/* The rig: live element (~40%) beside the network + DOM patch panel stack
+   (~60%), together occupying the majority of the viewport per DESIGN.md's
+   layout intent. Connector lines are absolutely positioned over the grid
+   and given their endpoints by app.js (it measures the actual zones). */
+.rig {
+  position: relative;
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  gap: var(--space-6);
+  min-height: 64vh;
+}
+
+/* An explicit display on .rig/.compare-grid would otherwise win over the UA
+   [hidden]{display:none} rule (author origin beats UA), leaving a "hidden" rig
+   still visible when comparison mode swaps them — pin hidden back to none. */
+.rig[hidden],
+.compare-rig[hidden] {
+  display: none;
+}
+
+.panels {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.connectors {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* app.js sets stroke-dasharray to the line's own length (one dash spanning
+   the whole path) so the dashoffset animation reads as the line drawing
+   itself rather than its dashes marching along a fixed pattern. */
+.connector {
+  stroke: var(--accent);
+  stroke-width: 2;
+  stroke-dashoffset: 0;
+  fill: none;
+  opacity: 0;
+  transition: opacity var(--motion-connector);
+}
+
+/* app.js sets the dasharray to the line's own length and toggles this
+   class; the browser animates dashoffset from full-length (invisible)
+   to 0 (fully traced) — the "line drawing itself" signature detail. */
+.connector.is-firing {
+  opacity: 1;
+  animation: connector-trace var(--motion-connector) ease-out forwards;
+}
+
+@keyframes connector-trace {
+  from {
+    stroke-dashoffset: var(--connector-length, 0);
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .connector.is-firing {
+    animation: none;
+    stroke-dashoffset: 0;
+  }
+}
+
+.zone {
+  position: relative;
+  background-color: var(--surface-1);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+}
+
+.zone--stage {
+  align-items: center;
+  justify-content: center;
+}
+
+.zone--network,
+.zone--patch {
+  flex: 1;
+}
+
+.zone__annotation {
+  position: absolute;
+  top: var(--space-2);
+  left: var(--space-4);
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  letter-spacing: 0.08em;
+  color: var(--text-muted);
+}
+
+.demo-stage {
+  margin-top: var(--space-6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* htmx toggles the .htmx-request class on the indicator element while a
+   request is in flight (see hx-indicator on #demo-el) — this is the
+   conventional opacity-fade pairing that convention expects. */
+.htmx-indicator {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--accent-support);
+  opacity: 0;
+  transition: opacity 200ms ease-in;
+}
+
+.htmx-request .htmx-indicator,
+.htmx-request.htmx-indicator {
+  opacity: 1;
+}
+
+/* The external hx-target destination: dashed and muted while idle (self
+   target active), solid and lit once the target preset actually points at
+   it, so which element will receive the next swap is legible at a glance.
+   The emphasis/annotation live on this stable wrapper rather than on
+   #demo-target-external itself, which htmx replaces wholesale on every
+   outerHTML swap — anything placed on the swapped node directly would be
+   discarded along with it. */
+.external-target-wrap {
+  margin-top: var(--space-6);
+  width: 100%;
+  max-width: 320px;
+  padding: var(--space-3) var(--space-4);
+  background: var(--surface-2);
+  border: 1px dashed var(--line);
+  border-radius: var(--radius);
+  color: var(--text-muted);
+  text-align: center;
+  transition: border-color var(--motion-ui), color var(--motion-ui), box-shadow var(--motion-ui);
+}
+
+.external-target-wrap .zone__annotation--inline {
+  position: static;
+  display: block;
+  margin-bottom: var(--space-2);
+}
+
+.external-target-wrap.is-active-target {
+  border-style: solid;
+  border-color: var(--accent);
+  color: var(--text);
+  box-shadow: inset 0 0 0 1px rgba(94, 200, 242, 0.15);
+}
+
+.demo-target-external {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+}
+
+.demo-target-external.is-flashing {
+  animation: patch-flash 700ms ease-out;
+}
+
+.demo-el {
+  font-family: var(--font-mono);
+  font-size: var(--step-1);
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-4) var(--space-8);
+  min-height: 44px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(94, 200, 242, 0.15);
+  transition: border-color var(--motion-ui), transform var(--motion-ui), box-shadow var(--motion-ui);
+}
+
+.demo-el:hover {
+  border-color: var(--accent-support);
+}
+
+.demo-el:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.demo-el:active {
+  transform: translateY(1px);
+}
+
+.demo-el.is-flashing {
+  animation: patch-flash 700ms ease-out;
+}
+
+@keyframes patch-flash {
+  0%,
+  100% {
+    border-color: var(--accent);
+    box-shadow: inset 0 0 0 1px rgba(94, 200, 242, 0.15);
+  }
+  30% {
+    border-color: var(--accent-support);
+    box-shadow: inset 0 0 0 2px var(--accent-support), 0 0 0 4px rgba(242, 166, 94, 0.2);
+  }
+}
+
+.patch-panel__code mark.is-flashing {
+  animation: mark-flash 700ms ease-out;
+}
+
+@keyframes mark-flash {
+  0%,
+  100% {
+    background: rgba(242, 166, 94, 0.35);
+  }
+  30% {
+    background: rgba(242, 166, 94, 0.7);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .demo-el.is-flashing,
+  .demo-target-external.is-flashing,
+  .patch-panel__code mark.is-flashing {
+    animation: none;
+    border-color: var(--accent-support);
+  }
+
+  /* The mode toggle's glyph spins on activation; drop the rotation so it just
+     changes state under reduced motion (the on/off styling still reads). */
+  .mode-toggle__glyph {
+    transition: none;
+  }
+
+  .mode-toggle.is-on .mode-toggle__glyph {
+    transform: none;
+  }
+}
+
+.network-panel {
+  margin: var(--space-6) 0 var(--space-4);
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--space-2) var(--space-4);
+}
+
+.network-panel__row {
+  display: contents;
+}
+
+.network-panel dt {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.network-panel dd {
+  margin: 0;
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text);
+  word-break: break-all;
+}
+
+.status-chip {
+  display: inline-block;
+  padding: 0 var(--space-2);
+  border-radius: 999px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+
+.status-chip.is-success {
+  color: var(--success);
+  border-color: var(--success);
+}
+
+.status-chip.is-error {
+  color: var(--danger);
+  border-color: var(--danger);
+}
+
+.network-panel__label,
+.patch-panel__label {
+  margin: var(--space-2) 0 var(--space-1);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
+.network-panel__code,
+.patch-panel__code {
+  margin: 0 0 var(--space-3);
+  padding: var(--space-3);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text);
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow: auto;
+  max-height: 12em;
+}
+
+.patch-panel__code {
+  flex: 1;
+  max-height: none;
+}
+
+.patch-panel__code mark {
+  background: rgba(242, 166, 94, 0.35);
+  color: var(--accent-support);
+  border-radius: var(--radius);
+  padding: 0 2px;
+}
+
+.rig-pulse {
+  display: none;
+}
+
+/* Comparison-mode toggle: styled as a distinct mode switch (amber support
+   accent) rather than another preset chip, so entering/leaving the two-lab
+   view reads as a mode change, not a value change. */
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  cursor: pointer;
+  transition: border-color var(--motion-ui), color var(--motion-ui), background-color var(--motion-ui);
+}
+
+.mode-toggle__glyph {
+  color: var(--accent-support);
+  transition: transform var(--motion-ui);
+}
+
+.mode-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent-support);
+}
+
+.mode-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.mode-toggle:active {
+  transform: translateY(1px);
+}
+
+.mode-toggle.is-on {
+  color: var(--bg);
+  background: var(--accent-support);
+  border-color: var(--accent-support);
+}
+
+.mode-toggle.is-on .mode-toggle__glyph {
+  color: var(--bg);
+  transform: rotate(180deg);
+}
+
+/* A preset group whose values don't apply in comparison mode (swap is the
+   axis being compared, trigger is the shared Fire-both button, target is
+   pinned to self): dimmed as a set so it's obviously inert, not broken. */
+.preset-toggle.is-disabled {
+  opacity: 0.45;
+}
+
+/* Comparison rig: a shared fire bar over two side-by-side labs, each a full
+   instrument (live element + status + response + DOM patch) so the same
+   request's two swap outcomes sit literally next to each other. */
+.compare-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.compare-bar__hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--step-0);
+}
+
+.compare-fire {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--step-0);
+  color: var(--bg);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-8);
+  min-height: 44px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(94, 200, 242, 0.25);
+  transition: border-color var(--motion-ui), transform var(--motion-ui), box-shadow var(--motion-ui);
+}
+
+.compare-fire:hover {
+  border-color: var(--accent-support);
+  box-shadow: inset 0 0 0 2px var(--accent-support);
+}
+
+.compare-fire:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.compare-fire:active {
+  transform: translateY(1px);
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.compare-lab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-1);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+}
+
+.compare-lab__title {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--step-0);
+  color: var(--accent);
+}
+
+.compare-lab__title code {
+  color: var(--text);
+}
+
+.compare-lab__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) 0;
+}
+
+.demo-el--compare {
+  font-size: var(--step-0);
+  padding: var(--space-3) var(--space-6);
+}
+
+/* Tablet and phone: the 40/60 side-by-side split has no room to breathe
+   below ~1024px, so the rig collapses to a single column stacked in
+   fire-order (stage, then network, then patch) — the same order the
+   markup is already written in. */
+@media (max-width: 1023px) {
+  body {
+    padding: var(--space-4);
+  }
+
+  .rig {
+    grid-template-columns: 1fr;
+    min-height: 0;
+  }
+
+  .connectors {
+    display: none;
+  }
+
+  .rig-pulse {
+    display: block;
+    width: 2px;
+    height: var(--space-6);
+    margin: 0 auto;
+    background: var(--line);
+  }
+
+  .rig-pulse.is-firing {
+    animation: rig-pulse-sweep var(--motion-connector) ease-out;
+  }
+
+  .preset-bar {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+  }
+
+  .preset-group,
+  .copy-link-btn {
+    flex-shrink: 0;
+  }
+
+  /* The 40/60 rig has no room below ~1024px and neither do two lab columns:
+     stack the comparison labs in fire order (innerHTML then outerHTML), the
+     same vertical rhythm the single rig collapses to. */
+  .compare-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-fire {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+@keyframes rig-pulse-sweep {
+  0%,
+  100% {
+    background: var(--line);
+  }
+  50% {
+    background: var(--accent);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rig-pulse.is-firing {
+    animation: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .wordmark {
+    font-size: var(--step-3);
+  }
+
+  .demo-el {
+    padding: var(--space-3) var(--space-6);
+    font-size: var(--step-0);
+  }
+
+  .preset-bar {
+    gap: var(--space-2);
+  }
+}
+
+/* Below-the-fold reference copy + FAQ: the same schematic surface as the rig,
+   set at a readable measure so it reads as documentation stamped onto the
+   blueprint rather than a separate marketing page. */
+.prose {
+  margin-top: var(--space-16);
+  padding-top: var(--space-8);
+  border-top: 1px solid var(--line);
+}
+
+.prose__inner {
+  max-width: 70ch;
+}
+
+.prose__h2 {
+  margin: var(--space-8) 0 var(--space-3);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--step-2);
+  letter-spacing: -0.01em;
+}
+
+.prose__h2:first-child {
+  margin-top: 0;
+}
+
+.prose__h3 {
+  margin: var(--space-6) 0 var(--space-2);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: var(--step-1);
+  color: var(--accent);
+}
+
+.prose p {
+  margin: 0 0 var(--space-4);
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.prose code,
+.faq code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  color: var(--accent);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 0 var(--space-1);
+}
+
+.prose a,
+.faq a,
+.portfolio-link {
+  color: var(--accent);
+}
+
+.faq {
+  margin: 0;
+}
+
+.faq__q {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  color: var(--text);
+}
+
+.faq__a {
+  margin: var(--space-2) 0 0;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+.site-footer {
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--line);
+}
+
+.portfolio-link {
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  text-decoration: none;
+  color: var(--text-muted);
+  transition: color var(--motion-ui);
+}
+
+.portfolio-link:hover {
+  color: var(--accent);
+}
+
+.portfolio-link:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 480px) {
+  .site-header {
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+}
