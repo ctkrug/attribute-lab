@@ -147,6 +147,22 @@ func TestDemoFragmentSelectMarksTheExternalOuterHTMLWrapper(t *testing.T) {
 	}
 }
 
+func TestDemoFragmentRejectsHeadRequest(t *testing.T) {
+	// The mux pattern is registered as "GET /api/demo", and net/http's
+	// ServeMux routes HEAD requests to a GET-only handler rather than
+	// synthesizing its own 405 (unlike every other unregistered method,
+	// which ServeMux rejects before handleDemo ever runs). This is the one
+	// path that actually reaches handleDemo's own method check.
+	req := httptest.NewRequest(http.MethodHead, "/api/demo", nil)
+	rec := httptest.NewRecorder()
+
+	testMux().ServeHTTP(rec, req)
+
+	if rec.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusMethodNotAllowed)
+	}
+}
+
 func TestDemoFragmentIndicatorDelaysTheResponse(t *testing.T) {
 	original := demoIndicatorDelay
 	demoIndicatorDelay = 30 * time.Millisecond
