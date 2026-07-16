@@ -138,6 +138,16 @@ test("splitHighlightSegments handles an empty markup string", () => {
   assert.deepEqual(splitHighlightSegments("", 1), [{ text: "", highlighted: false }]);
 });
 
+test("splitHighlightSegments degrades to unhighlighted when the matching tag is never closed", () => {
+  const markup = '<span data-gen="3">unclosed and truncated mid-response';
+  assert.deepEqual(splitHighlightSegments(markup, 3), [{ text: markup, highlighted: false }]);
+});
+
+test("splitHighlightSegments ignores a data-gen marker with no opening angle bracket before it", () => {
+  const markup = 'data-gen="4">stray marker with no tag';
+  assert.deepEqual(splitHighlightSegments(markup, 4), [{ text: markup, highlighted: false }]);
+});
+
 test("splitHighlightSegments highlights multiple separate matches", () => {
   const markup = '<span data-gen="2">a</span><i>gap</i><span data-gen="2">b</span>';
   const segments = splitHighlightSegments(markup, 2);
