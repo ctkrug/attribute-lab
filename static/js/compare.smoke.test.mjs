@@ -13,6 +13,7 @@ import { JSDOM } from "jsdom";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const html = readFileSync(join(here, "..", "index.html"), "utf8");
+const css = readFileSync(join(here, "..", "css", "style.css"), "utf8");
 
 // Boots the real app.js against a jsdom document with a stubbed htmx, seeded
 // from `search` (e.g. "?compare=1"). Returns the window plus the recorded
@@ -34,6 +35,22 @@ function fireHtmxEvent(document, type, detail) {
   evt.detail = detail;
   document.body.dispatchEvent(evt);
 }
+
+test("a hidden rig computes to display:none despite .rig's explicit display", () => {
+  // Guards the author-vs-UA cascade fix: .rig sets display:grid, which would
+  // otherwise beat the UA [hidden]{display:none} rule and leave a "hidden" rig
+  // on screen. Asserts the real stylesheet, not just the .hidden property.
+  const dom = new JSDOM(
+    `<!doctype html><html><head><style>${css}</style></head><body>` +
+      `<div class="rig" hidden></div><div class="rig"></div>` +
+      `<div class="compare-rig" hidden></div></body></html>`
+  );
+  const { window } = dom;
+  const rigs = window.document.querySelectorAll(".rig");
+  assert.equal(window.getComputedStyle(rigs[0]).display, "none");
+  assert.equal(window.getComputedStyle(rigs[1]).display, "grid");
+  assert.equal(window.getComputedStyle(window.document.querySelector(".compare-rig")).display, "none");
+});
 
 test("comparison rig is hidden and the single rig shown by default", async () => {
   const { document } = await boot("");
