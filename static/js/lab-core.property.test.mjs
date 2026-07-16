@@ -64,9 +64,45 @@ test("property: escapeHtml output never contains a raw < or > for any input", ()
   );
 });
 
+// fc.string() alone is a near-vacuous generator here: a random string almost
+// never contains a `data-gen="N"`-shaped substring, so it only ever exercises
+// splitHighlightSegments' no-match fallback path. This builds small,
+// realistic nested-tag fragments (with data-gen markers, including repeated
+// tag names and repeated gen values) so the matching/depth-tracking logic in
+// findGenRanges/findMatchingTagEnd is actually under test, not just skipped.
+const TAGS = ["span", "div", "button"];
+const GENS = [1, 2, 3];
+const textArb = fc.string({ maxLength: 6 }).map((s) => s.replace(/[<>]/g, "_"));
+const leafArb = textArb.map((text) => ({ kind: "text", text }));
+const genArb = fc.option(fc.constantFrom(...GENS), { nil: undefined });
+
+const innerTagArb = fc.record({
+  kind: fc.constant("tag"),
+  tag: fc.constantFrom(...TAGS),
+  gen: genArb,
+  children: fc.array(leafArb, { maxLength: 2 }),
+});
+const outerNodeArb = fc.oneof(
+  leafArb,
+  fc.record({
+    kind: fc.constant("tag"),
+    tag: fc.constantFrom(...TAGS),
+    gen: genArb,
+    children: fc.array(fc.oneof(leafArb, innerTagArb), { maxLength: 3 }),
+  })
+);
+
+function renderNode(node) {
+  if (node.kind === "text") return node.text;
+  const attr = node.gen === undefined ? "" : ` data-gen="${node.gen}"`;
+  return `<${node.tag}${attr}>${node.children.map(renderNode).join("")}</${node.tag}>`;
+}
+
+const markupArb = fc.array(outerNodeArb, { maxLength: 4 }).map((nodes) => nodes.map(renderNode).join(""));
+
 test("property: splitHighlightSegments segments always reconstruct the original markup exactly", () => {
   fc.assert(
-    fc.property(fc.string(), fc.oneof(fc.integer(), fc.string()), (markup, gen) => {
+    fc.property(markupArb, fc.constantFrom(...GENS), (markup, gen) => {
       const segments = splitHighlightSegments(markup, gen);
       const rebuilt = segments.map((s) => s.text).join("");
       assert.equal(rebuilt, markup);
