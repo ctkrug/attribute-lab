@@ -6,6 +6,9 @@
 *.out
 /coverage.out
 
+# Node (fast-check property tests)
+/node_modules/
+
 # OS
 .DS_Store
 Thumbs.db
