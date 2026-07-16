@@ -34,6 +34,9 @@ you *see happen*, not something you infer from a paragraph.
     instant the swap lands.
 - Presets are just attribute combinations (`hx-get` + `hx-trigger` + `hx-swap` + `hx-target`,
   etc.) applied to the demo element via a dropdown/toggle UI — no code editing required.
+- A **compare-swaps mode** flips the single rig into two labs — `innerHTML` beside
+  `outerHTML` — fired together by one "Fire both" button so the two DOM patches land side by
+  side. Each lab is instrumented independently from the same real htmx event stream.
 
 ## Planned features
 
@@ -42,7 +45,7 @@ you *see happen*, not something you infer from a paragraph.
 - [x] Live DOM patch panel: flash-highlight of exactly the nodes htmx swapped.
 - [x] Side-by-side sync: request fires and patch highlight land within the same visible beat.
 - [x] Broader preset coverage: `hx-trigger`, `hx-target`, `hx-select`, `hx-indicator`.
-- [ ] Swap-strategy comparison mode: fire the same trigger against two swap strategies at once.
+- [x] Swap-strategy comparison mode: fire the same trigger against two swap strategies at once.
 - [x] Shareable preset links (state encoded in the URL).
 
 ## Run it
@@ -55,8 +58,8 @@ make test          # go test -race ./... + node --test static/js/*.test.mjs
 
 No database, no build step for the frontend — `static/` is embedded straight into the
 binary via `go:embed`, so `make run` needs nothing beyond a Go toolchain. `make test`
-additionally needs Node — `test-js` runs `npm install` on first use (only fast-check, a
-dev-only property-testing library, is installed; nothing ships in the binary).
+additionally needs Node — `test-js` runs `npm install` on first use (dev-only: fast-check
+for property tests and jsdom for the comparison-mode smoke tests; nothing ships in the binary).
 
 ## Stack
 
@@ -64,15 +67,15 @@ dev-only property-testing library, is installed; nothing ships in the binary).
   and the static frontend.
 - **Frontend:** HTMX + vanilla JS/CSS — no framework, no build step required to run.
 - **Tests:** Go's built-in `testing` package (with `-race`) for handler/fragment behavior,
-  plus `node --test` — including `fast-check` property-based tests — for the pure
-  instrumentation-logic helpers.
+  plus `node --test` — `fast-check` property-based tests for the pure instrumentation-logic
+  helpers, and jsdom smoke tests for the comparison-mode DOM glue.
 
 ## Status
 
-Epics 1 and 2 (the wow moment, plus full `hx-trigger`/`hx-target`/`hx-select`/`hx-indicator`
-preset coverage) are built and verified end-to-end, as is shareable-link state, a keyboard
-radiogroup pattern with an aria-live status announcer, and confirmed responsive/subpath
-behavior from Epic 4 — see
+Epics 1–3 are built: the wow moment, full `hx-trigger`/`hx-target`/`hx-select`/`hx-indicator`
+preset coverage, side-by-side swap-strategy comparison mode, and shareable-link state — plus
+a keyboard radiogroup pattern with an aria-live status announcer and confirmed
+responsive/subpath behavior from Epic 4. See
 [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) for how it fits together,
 [`docs/VISION.md`](docs/VISION.md) for the full design,
 [`docs/DESIGN.md`](docs/DESIGN.md) for the visual direction, and
