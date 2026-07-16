@@ -139,6 +139,49 @@ test("a per-lab afterRequest lands only in that lab's readout", async () => {
   assert.equal(document.querySelector('.zone--network [data-field="status"]').textContent, "—");
 });
 
+test("single view: a request/settle cycle populates the network and patch panels", async () => {
+  const { document } = await boot("");
+  const net = document.querySelector(".zone--network");
+
+  fireHtmxEvent(document, "htmx:configRequest", {
+    elt: document.getElementById("demo-el"),
+    verb: "get",
+    path: "api/demo?swap=innerHTML&target=self",
+    headers: { "HX-Request": "true" },
+  });
+  assert.equal(net.querySelector('[data-field="method"]').textContent, "GET");
+  assert.equal(net.querySelector('[data-field="url"]').textContent, "api/demo?swap=innerHTML&target=self");
+  assert.match(net.querySelector('[data-field="request-headers"]').textContent, /HX-Request: true/);
+
+  fireHtmxEvent(document, "htmx:afterRequest", {
+    elt: document.getElementById("demo-el"),
+    xhr: {
+      status: 200,
+      responseText: "<span data-gen=\"5\">ok</span>",
+      getAllResponseHeaders: () => "content-type: text/html; charset=utf-8",
+    },
+  });
+  assert.equal(net.querySelector('[data-field="status"]').textContent, "200");
+  assert.ok(net.querySelector('[data-field="status"]').className.includes("is-success"));
+  assert.match(net.querySelector('[data-field="response-headers"]').textContent, /content-type/);
+
+  // Simulate htmx's innerHTML swap, then settle.
+  document.getElementById("demo-el").innerHTML = '<span class="demo-el__label" data-gen="5">ok</span>';
+  fireHtmxEvent(document, "htmx:afterSettle", { elt: document.getElementById("demo-el") });
+  assert.match(document.querySelector('.zone--patch [data-field="patch-markup"]').innerHTML, /<mark/);
+  assert.match(document.querySelector('[data-field="status-announcer"]').textContent, /Response 200/);
+});
+
+test("compare handlers ignore events while comparison mode is inactive", async () => {
+  const { document } = await boot(""); // single view, compare inactive
+  fireHtmxEvent(document, "htmx:afterRequest", {
+    elt: document.getElementById("cmp-inner-el"),
+    xhr: { status: 200, responseText: "x", getAllResponseHeaders: () => "" },
+  });
+  const innerLab = document.querySelector('.compare-lab[data-lab-swap="innerHTML"]');
+  assert.equal(innerLab.querySelector('[data-field="status"]').textContent, "—");
+});
+
 test("hx-indicator applies to both labs and settling announces the outcome", async () => {
   const { document } = await boot("?compare=1&indicator=1");
 
