@@ -110,6 +110,26 @@ test("property: splitHighlightSegments segments always reconstruct the original 
   );
 });
 
+test("property: every highlighted segment contains the gen marker it was matched on", () => {
+  // Reconstruction proves the segments *cover* the input; this proves they're
+  // the *right* ones — a highlight can only cover an element whose opening tag
+  // carries data-gen="<gen>", so that exact marker must fall inside every
+  // highlighted slice. Catches a mis-scoped range that reconstructs fine but
+  // highlights the wrong bytes.
+  fc.assert(
+    fc.property(markupArb, fc.constantFrom(...GENS), (markup, gen) => {
+      for (const seg of splitHighlightSegments(markup, gen)) {
+        if (seg.highlighted) {
+          assert.ok(
+            seg.text.includes(`data-gen="${gen}"`),
+            `highlighted segment ${JSON.stringify(seg.text)} lacks data-gen="${gen}"`
+          );
+        }
+      }
+    })
+  );
+});
+
 test("property: nextRadioIndex always returns an in-range index for a positive count", () => {
   fc.assert(
     fc.property(
