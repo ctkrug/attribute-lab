@@ -166,6 +166,28 @@ func TestDemoFragmentSelectMarksTheExternalOuterHTMLWrapper(t *testing.T) {
 	}
 }
 
+func TestDemoFragmentSelectMarksOnlyTheSwapRoot(t *testing.T) {
+	// hx-select="[data-fragment-content]" resolves via
+	// fragment.querySelectorAll(selector), and htmx moves every match into the
+	// swap with appendChild. If both a wrapper and a node nested inside it
+	// carry the marker, htmx hoists the inner node out of the wrapper,
+	// emptying the wrapper and duplicating the node. So exactly one element —
+	// the swap root htmx actually inserts — may carry data-fragment-content.
+	for _, query := range []string{
+		"?select=1",
+		"?swap=innerHTML&select=1",
+		"?swap=outerHTML&select=1",
+		"?swap=outerHTML&target=external&select=1",
+		"?swap=innerHTML&target=external&select=1",
+	} {
+		rec := fireDemo(t, query)
+		body := rec.Body.String()
+		if n := strings.Count(body, "data-fragment-content"); n != 1 {
+			t.Fatalf("query %q: data-fragment-content appears %d times, want exactly 1 (only the swap root may be marked)", query, n)
+		}
+	}
+}
+
 func TestDemoFragmentRejectsHeadRequest(t *testing.T) {
 	// The mux pattern is registered as "GET /api/demo", and net/http's
 	// ServeMux routes HEAD requests to a GET-only handler rather than
