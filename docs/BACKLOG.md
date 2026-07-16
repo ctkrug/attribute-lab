@@ -70,13 +70,17 @@ polish on top of a working demo, not a prerequisite to it.
 
 ## Epic 3 — Comparison mode and sharing
 
-- [ ] **3.1 — Side-by-side swap-strategy comparison mode**
+- [x] **3.1 — Side-by-side swap-strategy comparison mode**
   A comparison mode fires the same trigger against two swap strategies at once, each with
   its own network + DOM patch panel pair.
   - Firing the shared trigger updates both panel pairs, and the two DOM patch highlights
     are visibly different when the strategies differ (e.g. innerHTML vs outerHTML).
   - Comparison mode is reachable from the main view via a single control, not a separate
     page reload.
+  - Shipped as the "compare swaps" mode toggle in the preset bar: swaps the single rig for
+    a two-lab rig (innerHTML | outerHTML) fired by one shared "Fire both" button
+    (`hx-trigger="click from:#compare-fire"`), each lab instrumented independently in
+    `static/js/compare.mjs`.
 
 - [x] **3.2 — Shareable preset links**
   The full preset state (swap/trigger/target/select/indicator, and comparison mode if
@@ -86,11 +90,14 @@ polish on top of a working demo, not a prerequisite to it.
   - Invalid or malformed state in the URL falls back to the default preset instead of
     crashing the page.
 
-- [ ] **3.3 — Design polish: comparison mode layout**
+- [x] **3.3 — Design polish: comparison mode layout**
   Comparison mode matches `docs/DESIGN.md` at both panel-pair widths without becoming
   cramped.
   - At 1440px, both panel pairs are simultaneously legible without horizontal scroll.
   - At 390px, panel pairs stack vertically in fire-order with no overlap.
+  - Both labs are graph-paper zones in a 1fr/1fr grid on the blueprint tokens; at ≤1023px
+    the grid collapses to a single column in fire order and the "Fire both" button goes
+    full width.
 
 ## Epic 4 — Deploy and accessibility
 
