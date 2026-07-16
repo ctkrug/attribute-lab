@@ -594,6 +594,152 @@ body {
   display: none;
 }
 
+/* Comparison-mode toggle: styled as a distinct mode switch (amber support
+   accent) rather than another preset chip, so entering/leaving the two-lab
+   view reads as a mode change, not a value change. */
+.mode-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--step--1);
+  color: var(--text-muted);
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-2) var(--space-4);
+  min-height: 44px;
+  cursor: pointer;
+  transition: border-color var(--motion-ui), color var(--motion-ui), background-color var(--motion-ui);
+}
+
+.mode-toggle__glyph {
+  color: var(--accent-support);
+  transition: transform var(--motion-ui);
+}
+
+.mode-toggle:hover {
+  color: var(--text);
+  border-color: var(--accent-support);
+}
+
+.mode-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.mode-toggle:active {
+  transform: translateY(1px);
+}
+
+.mode-toggle.is-on {
+  color: var(--bg);
+  background: var(--accent-support);
+  border-color: var(--accent-support);
+}
+
+.mode-toggle.is-on .mode-toggle__glyph {
+  color: var(--bg);
+  transform: rotate(180deg);
+}
+
+/* A preset group whose values don't apply in comparison mode (swap is the
+   axis being compared, trigger is the shared Fire-both button, target is
+   pinned to self): dimmed as a set so it's obviously inert, not broken. */
+.preset-toggle.is-disabled {
+  opacity: 0.45;
+}
+
+/* Comparison rig: a shared fire bar over two side-by-side labs, each a full
+   instrument (live element + status + response + DOM patch) so the same
+   request's two swap outcomes sit literally next to each other. */
+.compare-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-4);
+  margin-bottom: var(--space-6);
+}
+
+.compare-bar__hint {
+  margin: 0;
+  color: var(--text-muted);
+  font-size: var(--step-0);
+}
+
+.compare-fire {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: var(--step-0);
+  color: var(--bg);
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: var(--radius);
+  padding: var(--space-3) var(--space-8);
+  min-height: 44px;
+  cursor: pointer;
+  box-shadow: inset 0 0 0 1px rgba(94, 200, 242, 0.25);
+  transition: border-color var(--motion-ui), transform var(--motion-ui), box-shadow var(--motion-ui);
+}
+
+.compare-fire:hover {
+  border-color: var(--accent-support);
+  box-shadow: inset 0 0 0 2px var(--accent-support);
+}
+
+.compare-fire:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.compare-fire:active {
+  transform: translateY(1px);
+}
+
+.compare-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-6);
+}
+
+.compare-lab {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: var(--surface-1);
+  background-image:
+    linear-gradient(var(--grid-line) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+  background-size: 24px 24px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+}
+
+.compare-lab__title {
+  margin: 0 0 var(--space-4);
+  font-family: var(--font-mono);
+  font-size: var(--step-0);
+  color: var(--accent);
+}
+
+.compare-lab__title code {
+  color: var(--text);
+}
+
+.compare-lab__stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-6) 0;
+}
+
+.demo-el--compare {
+  font-size: var(--step-0);
+  padding: var(--space-3) var(--space-6);
+}
+
 /* Tablet and phone: the 40/60 side-by-side split has no room to breathe
    below ~1024px, so the rig collapses to a single column stacked in
    fire-order (stage, then network, then patch) — the same order the
@@ -632,6 +778,18 @@ body {
   .preset-group,
   .copy-link-btn {
     flex-shrink: 0;
+  }
+
+  /* The 40/60 rig has no room below ~1024px and neither do two lab columns:
+     stack the comparison labs in fire order (innerHTML then outerHTML), the
+     same vertical rhythm the single rig collapses to. */
+  .compare-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-fire {
+    margin-left: 0;
+    width: 100%;
   }
 }
 
