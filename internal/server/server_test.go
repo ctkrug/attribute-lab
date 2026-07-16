@@ -26,6 +26,9 @@ func TestHealthz(t *testing.T) {
 	if got := rec.Body.String(); got != "ok" {
 		t.Fatalf("body = %q, want %q", got, "ok")
 	}
+	if ct := rec.Header().Get("Content-Type"); ct != "text/plain; charset=utf-8" {
+		t.Fatalf("content-type = %q, want text/plain; charset=utf-8", ct)
+	}
 }
 
 func TestDemoFragment(t *testing.T) {
