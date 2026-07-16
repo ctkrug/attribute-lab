@@ -18,10 +18,15 @@ static/
   css/style.css                docs/DESIGN.md tokens and the blueprint visual system
   js/
     lab-core.mjs                pure logic: preset URL/trigger-attribute building, status
-                                bucketing, header parsing, escaping, and the gen-scoped
-                                highlight splitter — zero DOM access
+                                bucketing, header parsing, escaping, comparison-lab config
+                                derivation, and the gen-scoped highlight splitter — zero DOM
     lab-core.test.mjs           node --test coverage for the above
-    app.js                      DOM glue: htmx event listeners, preset wiring, connector lines
+    lab-core.property.test.mjs  fast-check property tests (round-trip, escaping, highlight)
+    app.js                      DOM glue: single-view htmx event listeners, preset wiring,
+                                connector lines, and the compare-mode toggle
+    compare.mjs                 DOM glue: the two-lab comparison rig — per-lab htmx event
+                                routing, post-swap attribute re-assertion, patch rendering
+    compare.smoke.test.mjs      jsdom smoke coverage for app.js + compare.mjs wiring
 ```
 
 ## The preset surface
@@ -94,6 +99,35 @@ The preset bar's "copy link" control (`app.js`, wired to `[data-copy-link]`) jus
 existing behavior discoverable — it copies `window.location.href` via the Clipboard API and
 shows a transient "copied!"/"copy failed" state, falling back to the failure state rather
 than a silent no-op when the API is unavailable.
+
+## Comparison mode (`compare.mjs`)
+
+The preset bar's **"compare swaps" mode toggle** (`[data-compare-toggle]`, backed by
+`presetState.compare`, also URL-encoded so it's shareable) swaps the single rig for the
+`#compare-rig`: two labs side by side, one `hx-swap="innerHTML"`, one `hx-swap="outerHTML"`,
+holding every other axis fixed. `app.js: applyCompareMode` toggles which rig is visible and
+disables the presets that no longer apply while comparing (swap is the compared axis, trigger
+is the shared button, target is pinned to self via `lab-core.mjs: comparisonLabConfigs`).
+
+- **One shared trigger.** Both lab elements carry `hx-trigger="click from:#compare-fire"`, so
+  the single "Fire both" button fires both real requests at once — no JS request dispatch.
+- **Per-lab instrumentation, one event stream.** htmx events all fire on `document.body`, so
+  `compare.mjs` routes each to the lab whose `.compare-lab` root `contains(evt.detail.elt)`,
+  and the single-view handlers in `app.js` early-return on any event inside `#compare-rig`
+  (`isCompareEvent`). The two views never cross-drive.
+- **Surviving the outerHTML swap.** The `outerHTML` fragment comes back re-declaring
+  `id="demo-el"` (fragments.go restates the single view's identity), so after every settle
+  `compare.mjs: syncLab` re-stamps the lab's own id (`cmp-outer-el`) and re-asserts its full
+  `hx-*` set + `htmx.process` — the comparison-mode analogue of `syncDemoElAttributes`, and
+  the reason both labs keep firing off the shared button after the first outerHTML swap.
+- **Layout.** Two graph-paper zones in a `1fr/1fr` grid on the blueprint tokens; at ≤1023px
+  the grid collapses to one column in fire order and "Fire both" goes full width. A "hidden"
+  rig is pinned to `display:none` (`.rig[hidden]`/`.compare-rig[hidden]`) because `.rig`'s
+  explicit `display:grid` (author origin) would otherwise beat the UA `[hidden]` rule.
+
+The DOM glue in `app.js`/`compare.mjs` sits outside the DOM-free `lab-core` tests, so
+`compare.smoke.test.mjs` drives the real modules against a jsdom document with a stubbed
+htmx to cover the toggle, per-lab routing, id re-stamping, and the hidden-rig cascade.
 
 ## Accessibility
 
