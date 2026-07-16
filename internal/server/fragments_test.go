@@ -59,6 +59,24 @@ func TestDemoFragmentRejectsUnsupportedTargetValue(t *testing.T) {
 	}
 }
 
+func TestDemoFragmentSwapAndTargetValuesAreCaseSensitive(t *testing.T) {
+	for _, query := range []string{"?swap=InnerHTML", "?swap=OUTERHTML", "?target=Self", "?target=EXTERNAL"} {
+		rec := fireDemo(t, query)
+		if rec.Code != http.StatusBadRequest {
+			t.Fatalf("query %q: status = %d, want %d", query, rec.Code, http.StatusBadRequest)
+		}
+	}
+}
+
+func TestDemoFragmentRepeatedQueryParamUsesFirstValue(t *testing.T) {
+	rec := fireDemo(t, "?swap=innerHTML&swap=outerHTML")
+
+	body := rec.Body.String()
+	if strings.Contains(body, "<button") {
+		t.Fatalf("body = %q, want the first swap value (innerHTML) to win over the repeated one", body)
+	}
+}
+
 func TestDemoFragmentDefaultsToSelfTarget(t *testing.T) {
 	rec := fireDemo(t, "?swap=outerHTML")
 
