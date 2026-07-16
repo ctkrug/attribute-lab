@@ -406,6 +406,19 @@ function showCopyLinkFeedback(copied) {
   }, 1800);
 }
 
+// On a static host (e.g. the CDN this project publishes to) there is no Go
+// backend to answer GET api/demo, so a service worker scoped to the app root
+// synthesizes byte-identical fragment responses in the browser (see sw.js +
+// demo-fragment.mjs). Under `make run` the Go server answers directly and the
+// worker is a harmless, identical shim. Guarded on feature support so the app
+// still runs where service workers are absent (jsdom tests, older browsers) —
+// a failed registration just falls back to the network with nothing to retry.
+if (window.navigator && "serviceWorker" in window.navigator) {
+  window.addEventListener("load", () => {
+    window.navigator.serviceWorker.register("sw.js", { type: "module" }).catch(() => {});
+  });
+}
+
 window.addEventListener("resize", positionConnectors);
 hydrateControlsFromState();
 applyPreset();
