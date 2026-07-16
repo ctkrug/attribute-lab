@@ -11,8 +11,11 @@ test: test-go test-js
 test-go:
 	go test -race ./...
 
-test-js:
+test-js: node_modules
 	node --test static/js/*.test.mjs
+
+node_modules: package.json
+	npm install --no-audit --no-fund
 
 vet:
 	go vet ./...
