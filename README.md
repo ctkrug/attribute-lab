@@ -24,7 +24,12 @@ you *see happen*, not something you infer from a paragraph.
 ## How it works
 
 - A small **Go** server exposes a handful of demo endpoints that return htmx-flavored HTML
-  fragments (the same kind of responses a real htmx backend would send).
+  fragments (the same kind of responses a real htmx backend would send). It's what runs under
+  `make run`. In production — published as static files with no Go runtime — a **service
+  worker** (`static/sw.js`) answers the same `api/demo` requests in the browser from a
+  byte-for-byte JS port of the Go renderer, so htmx still makes a real request against a real
+  response and the network panel is never a mock. A golden manifest test keeps the two backends
+  identical.
 - The frontend is plain **HTMX** wired to a live demo element. A lightweight instrumentation
   layer taps `htmx:configRequest` / `htmx:afterRequest` / `htmx:afterSwap` to drive two
   synced panels:
@@ -64,7 +69,9 @@ for property tests and jsdom for the comparison-mode smoke tests; nothing ships 
 ## Stack
 
 - **Backend:** Go (`net/http`, stdlib only where practical) serving htmx fragment endpoints
-  and the static frontend.
+  and the static frontend for self-host; on the static CDN deploy a root-scoped service worker
+  serves the same fragments in-browser from a JS port of the Go renderer (golden-tested for
+  byte parity).
 - **Frontend:** HTMX + vanilla JS/CSS — no framework, no build step required to run.
 - **Tests:** Go's built-in `testing` package (with `-race`) for handler/fragment behavior,
   plus `node --test` — `fast-check` property-based tests for the pure instrumentation-logic

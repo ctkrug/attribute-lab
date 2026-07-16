@@ -41,19 +41,23 @@ staged animation — it's instrumentation on the real thing.
 
 ## Key design decisions
 
-- **Real requests, not mocked JSON.** The Go backend serves genuine htmx-fragment
+- **Real requests, not mocked JSON.** The demo endpoint serves genuine htmx-fragment
   responses so the network panel shows headers and bodies htmx actually produced, not a
   simulated read-out. This is the credibility of the whole tool — a mocked panel would be
-  just another diagram.
+  just another diagram. htmx always issues a real request; whether the Go server answers it
+  (self-host) or a service worker answers it from a byte-identical port of the same renderer
+  (the static CDN deploy, which has no Go runtime), the panel reflects an actual response.
 - **Instrumentation via htmx events, not a forked htmx.** Tapping `htmx:before*`/`after*`
   events keeps the demo on stock htmx, so what's shown is what any htmx app does, not a
   Attribute-Lab-specific behavior.
 - **One demo element, many presets** — not one page per attribute. Switching presets on
   the same element is what makes the *comparison* (innerHTML vs outerHTML, click vs
   revealed) legible; separate pages would lose the side-by-side.
-- **Static, self-contained deployment.** The Go server has no database and no external
-  services — it's stdlib `net/http` serving embedded static assets plus a handful of
-  fragment endpoints. This keeps it trivially deployable to `apps.charliekrug.com`.
+- **Static, self-contained deployment.** No database, no external services, no server-side
+  runtime in production: the site ships as static files to `apps.charliekrug.com`, and a
+  service worker supplies the `api/demo` fragments the CDN can't. The Go server (stdlib
+  `net/http`, `static/` embedded) is the same app for local runs and self-hosting; the golden
+  manifest keeps its fragments and the worker's in lockstep.
 - **No framework on the frontend.** Vanilla JS + htmx keeps the instrumentation layer
   legible as an example in itself — a visitor should be able to view-source the
   instrumentation and understand it in a few minutes.
