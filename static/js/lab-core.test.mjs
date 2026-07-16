@@ -104,6 +104,15 @@ test("escapeHtml leaves plain text untouched", () => {
   assert.equal(escapeHtml("Request #3 handled by outerHTML"), "Request #3 handled by outerHTML");
 });
 
+test("escapeHtml passes unicode and emoji through unmodified", () => {
+  const text = "Requête n°3 réussie 🎉 — 素晴らしい";
+  assert.equal(escapeHtml(text), text);
+});
+
+test("escapeHtml handles an empty string", () => {
+  assert.equal(escapeHtml(""), "");
+});
+
 test("splitHighlightSegments highlights the whole outer element when outer and inner share a gen", () => {
   const markup = '<button id="demo-el" data-gen="5"><span data-gen="5">hi</span></button>';
   const segments = splitHighlightSegments(markup, 5);
