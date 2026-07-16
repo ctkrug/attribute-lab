@@ -58,12 +58,16 @@ query string (`swap`, `target`, `select=1`, `indicator=1`).
      this: the trigger button lives outside the swapped subtree.
    - `select=1` wraps the payload in `wrapWithSelectNoise`, stamping the real payload's root
      with `data-fragment-content` so the frontend's `hx-select="[data-fragment-content]"` filters
-     the noise out before swap — the network panel still shows the full, unfiltered body.
+     the noise out before swap — the network panel still shows the full, unfiltered body. Only
+     the swap root is marked, never a node nested inside it: htmx resolves `hx-select` via
+     `querySelectorAll` and `appendChild`-moves each match, so a second, nested match would be
+     hoisted out of its wrapper and duplicated.
    - `indicator=1` sleeps `demoIndicatorDelay` (600ms) before responding, long enough for the
      `hx-indicator`-driven loading chip to actually be visible.
    Every fragment is stamped with a process-wide, monotonically increasing `data-gen` counter.
-4. `htmx:afterRequest` populates the network panel's response side (status, body) straight from
-   the XHR — nothing here is synthesized.
+4. `htmx:afterRequest` populates the network panel's response side (status, headers, body)
+   straight from the XHR — nothing here is synthesized. Response headers come from
+   `lab-core.mjs: parseResponseHeaders(xhr.getAllResponseHeaders())`.
 5. `htmx:afterSettle` (not `afterSwap`) triggers `app.js: renderPatchPanel`, which reads the
    active target's (`#demo-el` or `#demo-target-external`, per `lastRequestState.target`)
    *current* `outerHTML` from the live DOM and runs it through `lab-core.mjs:
