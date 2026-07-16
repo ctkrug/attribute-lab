@@ -513,6 +513,16 @@ body {
     animation: none;
     border-color: var(--accent-support);
   }
+
+  /* The mode toggle's glyph spins on activation; drop the rotation so it just
+     changes state under reduced motion (the on/off styling still reads). */
+  .mode-toggle__glyph {
+    transition: none;
+  }
+
+  .mode-toggle.is-on .mode-toggle__glyph {
+    transform: none;
+  }
 }
 
 .network-panel {
